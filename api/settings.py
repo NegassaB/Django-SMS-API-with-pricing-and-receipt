@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # frameworks
+    'rest_framework',
     'rest_framework_swagger',
     # my own
     'commons',
@@ -86,6 +87,9 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '3306',
         'DEFAULT-CHARACTER-SET': 'UTF8',
+        'OPTIONS': {
+            'init_command': 'SET foreign_key_checks=0;'
+            },
     }
 }
 
