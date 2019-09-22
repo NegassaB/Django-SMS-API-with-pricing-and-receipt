@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # frameworks
+    'rest_framework_swagger',
+    # my own
+    'commons',
 ]
 
 MIDDLEWARE = [
@@ -75,11 +79,17 @@ WSGI_APPLICATION = 'api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'api_db_sms_et',
+        'USER': 'api_user',
+        'PASSWORD': 'api.user',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'DEFAULT-CHARACTER-SET': 'UTF8',
     }
 }
 
+AUTH_USER_MODEL = 'commons.SMSUser'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

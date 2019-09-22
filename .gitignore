@@ -103,3 +103,6 @@ api_env/
 
 # mypy
 .mypy_cache/
+
+# vscode stuff
+.vscode/
