@@ -30,17 +30,6 @@ class SMSUserSerializer(serializers.ModelSerializer):
         return user
 
 
-class SmSPriceSerializer(serializers.ModelSerializer):
-    """
-    A class for serializing the SMSPrice model's data. It sub-classes's the
-    ModelSerializer class from serializer's module.
-    """
-
-    class Meta:
-        model = SMSPrice
-        fields = '__all__'
-
-
 class TypeSerializer(serializers.ModelSerializer):
     """
     A class for serializing the Type model's data. It sub-classes's the
@@ -49,4 +38,17 @@ class TypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Type
+        fields = '__all__'
+
+
+class SMSPriceSerializer(serializers.ModelSerializer):
+    """
+    A class for serializing the SMSPrice model's data. It sub-classes's the
+    ModelSerializer class from serializer's module.
+    """
+
+    types = TypeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = SMSPrice
         fields = '__all__'
