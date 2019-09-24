@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 
 from commons.models import SMSUser, SMSPrice, Type
 
@@ -10,13 +11,20 @@ class SMSUserSerializer(serializers.ModelSerializer):
     """
 
     class Meta:
+        """
+        This Meta class defines what must be included in the fields when a post request is made
+        (everything but the sms_price), and makes sure that the password is not returned in the response
+        by using the extra_kwargs to set the password field to write_only.
+        """
         model = SMSUser
-        fields = 'username, email, first_name, last_name, company_name'
+        exclude = ('sms_price', )
+        # fields = ('username, email, first_name, last_name, company_name, password')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         """
         The method used to create a new SMSUser, (all this is based on the djangoapibook process).
+        It also includes a way to create an authorization Token for the created user.
         """
         user = SMSUser(
             username=validated_data['username'],
@@ -27,6 +35,7 @@ class SMSUserSerializer(serializers.ModelSerializer):
             )
         user.set_password(validated_data['password'])
         user.save()
+        Token.objects.create(user=user)
         return user
 
 
