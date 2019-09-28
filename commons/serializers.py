@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
-from commons.models import SMSUser, SMSPrice, Type
+from commons.models import SMSUser, SMSPrice, Type, SMSMessages
 
 
 class SMSUserSerializer(serializers.ModelSerializer):
@@ -9,7 +9,6 @@ class SMSUserSerializer(serializers.ModelSerializer):
     A class for serializing the SMSUser model's data. It sub-classes's the
     ModelSerializer class from serializer's module.
     """
-
     class Meta:
         """
         This Meta class defines what must be included in the fields when a post request is made
@@ -61,3 +60,15 @@ class SMSPriceSerializer(serializers.ModelSerializer):
     class Meta:
         model = SMSPrice
         fields = '__all__'
+
+
+class SMSMessagesSerializer(serializers.ModelSerializer):
+    """
+    A class for serializing the SMSMessages model's data. It sub-classes the
+    ModelSerializer class from serializer's module.
+    """
+
+
+class Meta:
+    model = SMSMessages
+    fields = '__all__'
