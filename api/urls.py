@@ -16,10 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 
+from commons.views import homepage
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #homepage
-    # path(),
     # for the commons app
     path("", include('commons.urls')),
     # Read the below N.B.

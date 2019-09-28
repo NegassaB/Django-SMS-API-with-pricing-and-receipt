@@ -6,7 +6,7 @@ from rest_framework.authtoken import views
 
 # if you need a custom login, you can import LoginView and LoginView.as_view() in the path
 from commons.apiviews import TypeList, TypeDetail, SMSPriceList, SMSPriceDetail, SMSUserCreate, SMSUserUpdate
-
+from .views import homepage
 """
 describe the entire urlpattern here.
 """
@@ -14,6 +14,8 @@ describe the entire urlpattern here.
 app_name = "commons"
 
 urlpatterns = [
+    # for the homepage view, strictly html
+    path("", homepage, name="homepage"),
     # for all the types of sms users presented as_view()
     path("types/", TypeList.as_view(), name="type_list"),
     # for a specific type of sms users presented as_view()
