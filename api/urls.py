@@ -14,8 +14,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include, re_path
 
+from commons.views import homepage
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # for the commons app
+    path("", include('commons.urls')),
+    # Read the below N.B.
+    # re_path(r'^api-auth/', include('rest_framework.urls')),
 ]
+
+"""
+the url(r'^api-auth/', include('rest_framework.urls')) was directly copied from the official django rest framework website.
+It stated that this will handle the necessary login and logout issues pertaining to the api. So it was copied here to test.
+During testing it request that CSRF token be set.
+"""
