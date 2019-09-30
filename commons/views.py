@@ -11,5 +11,7 @@ commons/homepage and return it w/ all it's necessary components. Notice that it
 doesn't have a context dictionary object in the returned render object b/c the it's
 just a simple placeholder display.
 """
+
+
 def homepage(request):
     return render(request, "commons/homepage.html")

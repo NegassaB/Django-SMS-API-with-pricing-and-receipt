@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import CustomUserChangeForm, CustomUserCreationForm
-from .models import SMSUser, SMSPrice, Type
+from .models import SMSUser, SMSPrice, Type, SMSMessages
 
 # Register your models here.
 
@@ -19,3 +19,4 @@ class SMSUserAdmin(UserAdmin):
 admin.site.register(SMSUser, SMSUserAdmin)
 admin.site.register(SMSPrice)
 admin.site.register(Type)
+admin.site.register(SMSMessages)
