@@ -51,6 +51,8 @@ class SMSMessages(models.Model):
     sms_number_to = models.CharField(max_length=14)
     sms_content = models.CharField(max_length=160)
     sender_company = models.ForeignKey("SMSUser", on_delete=models.PROTECT, related_name="company_that_sent", limit_choices_to=1)
+    sent_date = models.DateTimeField(auto_now=True)
+    delivery_status = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = "SMSMessages"

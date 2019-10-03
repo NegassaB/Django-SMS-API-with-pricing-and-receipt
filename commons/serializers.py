@@ -68,7 +68,6 @@ class SMSMessagesSerializer(serializers.ModelSerializer):
     ModelSerializer class from serializer's module.
     """
 
-
-class Meta:
-    model = SMSMessages
-    fields = '__all__'
+    class Meta:
+        model = SMSMessages
+        fields = '__all__'
