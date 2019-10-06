@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate
 
 from commons.models import SMSMessages
 from commons.serializers import SMSMessagesSerializer
-from notification.sender import sender
+from notification.sender import retry
 
 
 class SMSMessagesView(generics.ListCreateAPIView):
@@ -28,7 +28,7 @@ class SMSMessagesView(generics.ListCreateAPIView):
 
 class SMSendView(APIView):
     """
-    This class is responsible for sending an sms. It send a valid, necessary bundled up data to the sender() method from
+    This class is responsible for sending an sms. It send a valid, necessary bundled up data to the retry() method from
     the notification.sender module. Once it recieves a boolean value from that module it updates the instance and saves it to the db.
     """
 
@@ -37,7 +37,7 @@ class SMSendView(APIView):
     def post(self, request):
         """
         This method is used to create an instance of the SMSMessages indirectly by using the SMSMessagesSerializer.
-        If that is valid it will be passed to the sender() method from the notification.sender module. Once that returns
+        If that is valid it will be passed to the retry() method from the notification.sender module. Once that returns
         a True value the serializer will be saved, aka the object will be saved to the database with a delivery_status value
         of True.
         """
@@ -59,7 +59,7 @@ class SMSendView(APIView):
                     "sms_content"
                 )
                 }
-            if sender(data_to_send):
+            if retry(data_to_send):
                 # The below is left as reminder of how you did it first
                 # sms_messages_serializer.update(data={"delivery_status": True}, partial=True)
                 sms_messages_serializer.update(instance, validated_data={"delivery_status": True})
@@ -85,7 +85,7 @@ class SMSendView(APIView):
                         sms_messages_serializer.save()
                         return Response(
                             data={
-                                "success": "You have successfully sent the sms"
+                                "success": "You have successfully sent the sms."
                             },
                             status=status.HTTP_201_CREATED
                         )

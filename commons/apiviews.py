@@ -1,7 +1,7 @@
 """
 This is the file responsible for generating the necessary views of the commons app.
 """
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.views import APIView
@@ -109,20 +109,53 @@ class SMSUserUpdate(generics.UpdateAPIView):
     """
     The actual method that does the updating. Overrides the update() method from generics.UpdateAPIView.
     Copied straight outta S.O, question -> https://stackoverflow.com/questions/57306682/how-to-update-a-single-field-in-a-model-using-updateapiview-from-djangorestframe
+    What it does is it check if the request parameter has any of the attributes set and it updates the specified attribute by the inserted value.
+    It can update only one field or multiple.
     """
     # TODO: properly document/comment this method
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        instance.name = request.data.get("name")
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        if request.data.get("company_name"):
+            instance.company_name = request.data.get("company_name")
+            serializer = self.get_serializer(instance, data=request.data, partial=True)
+        elif request.data.get("username"):
+            instance.username = request.data.get("username")
+            serializer = self.get_serializer(instance, data=request.data, partial=True)
+        elif request.data.get("email"):
+            instance.email = request.data.get("email")
+            serializer = self.get_serializer(instance, data=request.data, partial=True)
+        elif request.data.get("first_name"):
+            instance.first_name = request.data.get("first_name")
+            serializer = self.get_serializer(instance, data=request.data, partial=True)
+        elif request.data.get("last_name"):
+            instance.last_name = request.data.get("last_name")
+            serializer = self.get_serializer(instance, data=request.data, partial=True)
+        else:
+            return Response(
+                {
+                    "message": "update not allowed on attribute"
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         if serializer.is_valid():
             serializer.save()
             # TODO: write a better Response than this
-            return Response({"message": "updated successfully"})
+            return Response(
+                {
+                    "message": "updated successfully"
+                },
+                status=status.HTTP_201_CREATED
+                )
         else:
             # TODO: write a better Response than this
-            return Response({"message": "failed", "details": serializer.errors})
+            return Response(
+                {
+                    "message": "failed",
+                    "details": serializer.errors
+                },
+                status=status.HTTP_409_CONFLICT
+            )
 
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
@@ -138,6 +171,16 @@ class LoginView(APIView):
         password = request.data.get("password")
         user = authenticate(username=username, password=password)
         if user:
-            return Response({"token": user.auth_token.key})
+            return Response(
+                {
+                    "token": user.auth_token.key
+                },
+                status=status.HTTP_200_OK
+            )
         else:
-            return Response({"error": "wrong credentials"}, status=status.HTTP_403_ACCESS_DENIED)
+            return Response(
+                {
+                    "error": "wrong credentials"
+                },
+                status=status.HTTP_401_UNAUTHORIZED
+            )

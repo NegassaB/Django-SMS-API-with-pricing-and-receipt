@@ -18,24 +18,22 @@ router = DefaultRouter()
 router.register('smsusers', SMSUserViewSet, base_name="smsusers")
 
 urlpatterns = [
-    # for the homepage view, strictly html
-    path("", homepage, name="homepage"),
     # for all the types of sms users, presented as_view()
-    path("types/", TypeList.as_view(), name="type_list"),
+    path('types/', TypeList.as_view(), name="type_list"),
     # for a specific type of sms users, presented as_view()
-    path("types/<int:pk>/", TypeDetail.as_view(), name="type_details"),
+    path('types/<int:pk>/', TypeDetail.as_view(), name="type_details"),
     # for all the prices of sms, presented as_view()
-    path("prices/", SMSPriceList.as_view(), name="price_list"),
+    path('prices/', SMSPriceList.as_view(), name="price_list"),
     # for a specific price of sms users, presented as_view()
-    path("prices/<int:pk>/", SMSPriceDetail.as_view(), name="price_details"),
+    path('prices/<int:pk>/', SMSPriceDetail.as_view(), name="price_details"),
     # for the sms users creation, presented as_view()
-    path("smsusers/create/", SMSUserCreate.as_view(), name="create_sms_user"),
+    path('smsusers/create/', SMSUserCreate.as_view(), name="create_sms_user"),
     # for updating a specific smsuser, presented as_view()
-    path("smsusers/update/<int:pk>/", SMSUserUpdate.as_view(), name="update_sms_user"),
+    path('smsusers/update/<int:pk>/', SMSUserUpdate.as_view(), name="update_sms_user"),
     # for displaying all the instances of smsuser, presented as_view()
     # path("smsusers/", SMSUserViewSet, name="view_all_sms_users"),
     # for logining in a user by obtaining an authorization token
-    path("login/", views.obtain_auth_token, name="login"),
+    path('login/', views.obtain_auth_token, name="login"),
 ]
 
 urlpatterns += router.urls

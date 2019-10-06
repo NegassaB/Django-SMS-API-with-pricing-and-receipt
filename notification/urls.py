@@ -10,6 +10,6 @@ router = DefaultRouter()
 # router.register('smsmessages', )
 
 urlpatterns = [
-    path("smsmessages/", SMSMessagesView.as_view(), name="sms_messages"),
-    path("sendsms/", SMSendView.as_view(), name="send_sms"),
+    path('smsmessages/', SMSMessagesView.as_view(), name="sms_messages"),
+    path('sendsms/', SMSendView.as_view(), name="send_sms"),
 ]
