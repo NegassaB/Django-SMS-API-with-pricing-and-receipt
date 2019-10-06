@@ -2,8 +2,8 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
-from .forms import CustomUserChangeForm, CustomUserCreationForm
-from .models import SMSUser, SMSPrice, Type, SMSMessages
+from commons.forms import CustomUserChangeForm, CustomUserCreationForm
+from commons.models import SMSUser, SMSPrice, Type, SMSMessages
 
 # Register your models here.
 

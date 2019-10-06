@@ -1,14 +1,14 @@
 """
-This is the file responsible for generating the necessary views of the api.
+This is the file responsible for generating the necessary views of the commons app.
 """
 from rest_framework import generics
 from rest_framework import viewsets
+from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.contrib.auth import authenticate
-from rest_framework import permissions
 
 from commons.models import SMSUser, SMSPrice, Type, SMSMessages
 from commons.serializers import SMSUserSerializer, SMSPriceSerializer, TypeSerializer, SMSMessagesSerializer
@@ -20,6 +20,8 @@ class SMSUserViewSet(viewsets.ModelViewSet):
     (As we decided to use viewset for the SMSUser model) for the SMSUser model.
     It sub-classes the ModelViewSet of the rest_framework.
     """
+    authentication_classes = ()
+    permission_classes = ()
     queryset = SMSUser.objects.all()
     serializer_class = SMSUserSerializer
 
@@ -70,10 +72,19 @@ class SMSPriceDetail(generics.RetrieveAPIView):
 
 class SMSUserCreate(generics.CreateAPIView):
     """
-    This class is reponsible for generatng a view for the SMSUser instace creation, aka user registration.
+    This class is reponsible for generatng a view for the SMSUser instance creation, aka user registration.
     It sub-classes the CreateAPIView class from the generics module.
     The authentication_classes = () and the permission_classes = () are added to exempt the SMSUserCreate
     class from global authentication scheme.
+    """
+    authentication_classes = ()
+    permission_classes = ()
+    serializer_class = SMSUserSerializer
+
+
+class SMSUserView(generics.ListAPIView):
+    """
+    This class is responsible for creating a view for the SMSUser model, aka display all the smsuser objects created.
     """
     authentication_classes = ()
     permission_classes = ()
@@ -130,16 +141,3 @@ class LoginView(APIView):
             return Response({"token": user.auth_token.key})
         else:
             return Response({"error": "wrong credentials"}, status=status.HTTP_403_ACCESS_DENIED)
-
-
-class SMSMessagesView(generics.ListCreateAPIView):
-    """
-    This class is responsible for generating, and returning, the view for all created objects of the SMSMessages model.
-    It sub-classes the ListCreateAPIView class of the generics module.
-    """
-
-    queryset = SMSMessages.objects.all()
-    if not queryset:
-        Response(data={"{0} not found".format(queryset)}, status=404, content_type="application/json")
-
-    serializer_class = SMSMessagesSerializer

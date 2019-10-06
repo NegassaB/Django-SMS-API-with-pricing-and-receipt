@@ -16,11 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 
-from commons.views import homepage
 urlpatterns = [
     path('admin/', admin.site.urls),
     # for the commons app
-    path("", include('commons.urls')),
+    path("commons/", include('commons.urls')),
+    # for the notification app
+    path("notification/", include('notification.urls'))
     # Read the below N.B.
     # re_path(r'^api-auth/', include('rest_framework.urls')),
 ]

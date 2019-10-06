@@ -50,7 +50,7 @@ Btw I have decided to leave the msg_key attribute to the login info and have it 
 class SMSMessages(models.Model):
     sms_number_to = models.CharField(max_length=14)
     sms_content = models.CharField(max_length=160)
-    sender_company = models.ForeignKey("SMSUser", on_delete=models.PROTECT, related_name="company_that_sent", limit_choices_to=1)
+    sending_user = models.ForeignKey("SMSUser", on_delete=models.PROTECT, related_name="user_that_sent")
     sent_date = models.DateTimeField(auto_now=True)
     delivery_status = models.BooleanField(default=False)
 
@@ -58,4 +58,4 @@ class SMSMessages(models.Model):
         verbose_name_plural = "SMSMessages"
 
     def __str__(self):
-        return self.sender_company
+        return str(self.sending_user)
