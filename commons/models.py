@@ -12,7 +12,7 @@ class SMSUser(AbstractUser):
     last_name = models.CharField(max_length=100)
     company_name = models.CharField(max_length=150)
     # make the value 1 in the db an unset value and the rest the actual values
-    sms_price = models.ForeignKey("SMSPrice", related_name="sms_prices", on_delete=models.PROTECT)
+    sms_price = models.ForeignKey("SMSPrice", related_name="sms_prices", on_delete=models.PROTECT, default=1)
 
     class Meta:
         verbose_name_plural = "SMSUsers"
@@ -22,6 +22,7 @@ class SMSUser(AbstractUser):
 
 
 class SMSPrice(models.Model):
+    # change to floatField
     set_price = models.CharField(max_length=25)
     price_desc = models.CharField(max_length=100)
     # make the value 1 in the db an unset value and the rest the actual values

@@ -11,4 +11,5 @@ router = DefaultRouter()
 
 urlpatterns = [
     path("smsmessages/", SMSMessagesView.as_view(), name="sms_messages"),
+    path("sendsms/", SMSendView.as_view(), name="send_sms"),
 ]

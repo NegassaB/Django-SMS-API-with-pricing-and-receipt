@@ -51,7 +51,7 @@ class SMSendView(APIView):
         permission_classes = (permissions.IsAuthenticated)
 
         if sms_messages_serializer.is_valid():
-            data_to_tele = {
+            data_to_send = {
                 "phone_number": sms_messages_serializer.data.get(
                     "sms_number_to"
                 ),
@@ -59,7 +59,7 @@ class SMSendView(APIView):
                     "sms_content"
                 )
                 }
-            if sender(data_to_tele):
+            if sender(data_to_send):
                 # The below is left as reminder of how you did it first
                 # sms_messages_serializer.update(data={"delivery_status": True}, partial=True)
                 sms_messages_serializer.update(instance, validated_data={"delivery_status": True})
@@ -71,7 +71,7 @@ class SMSendView(APIView):
                     status=status.HTTP_201_CREATED
                 )
             else:
-                if not retry(data_to_tele):
+                if not retry(data_to_send):
                     sms_messages_serializer.update(instance, validated_data={"delivery_status": True})
                     sms_messages_serializer.save()
                     return Response(
@@ -80,7 +80,7 @@ class SMSendView(APIView):
                         },
                         status=status.HTTP_201_CREATED
                     )
-                    if not retry(data_to_tele):
+                    if not retry(data_to_send):
                         sms_messages_serializer.update(instance, validated_data={"delivery_status": True})
                         sms_messages_serializer.save()
                         return Response(
