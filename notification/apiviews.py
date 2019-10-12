@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate
 
 from commons.models import SMSMessages
 from commons.serializers import SMSMessagesSerializer
-from notification.sender import retry
+from notification.sender import sender_utility
 
 
 class SMSMessagesView(generics.ListCreateAPIView):
@@ -28,8 +28,9 @@ class SMSMessagesView(generics.ListCreateAPIView):
 
 class SMSendView(APIView):
     """
-    This class is responsible for sending an sms. It send a valid, necessary bundled up data to the retry() method from
-    the notification.sender module. Once it recieves a boolean value from that module it updates the instance and saves it to the db.
+    This class is responsible for sending an sms. It send a valid, necessary bundled up data to the sender_utility() method from
+    the notification.sender module. It saves the instance using the serializer and then runs the sending function,
+    Once it recieves a boolean value from that module it updates the instance and saves it to the db.
     """
 
     serializer_class = SMSMessagesSerializer
@@ -37,8 +38,9 @@ class SMSendView(APIView):
     def post(self, request):
         """
         This method is used to create an instance of the SMSMessages indirectly by using the SMSMessagesSerializer.
-        If that is valid it will be passed to the retry() method from the notification.sender module. Once that returns
-        a True value the serializer will be saved, aka the object will be saved to the database with a delivery_status value
+        If that is valid it will be passed to the sender_utility() method from the notification.sender module. The serializer
+        will be saved, , aka the object will be saved to the database and then tthe sender_utility() called.Once that returns
+        a True value the instance will be called, aka the object will be saved to the database with a delivery_status value
         of True.
         """
         sms_messages_serializer = SMSMessagesSerializer(
@@ -52,49 +54,33 @@ class SMSendView(APIView):
 
         if sms_messages_serializer.is_valid():
             data_to_send = {
-                "phone_number": sms_messages_serializer.data.get(
+                "phone_number": sms_messages_serializer.validated_data[
                     "sms_number_to"
-                ),
-                "content": sms_messages_serializer.data.get(
+                ],
+                "content": sms_messages_serializer.validated_data[
                     "sms_content"
+                ]
+            }
+            sms_messages_serializer.save()
+            if not sender_utility(data_to_send):
+                return Response(
+                    data={
+                        "error": "sms not sent, please try again."
+                    },
+                    status=status.HTTP_504_GATEWAY_TIMEOUT,
+                    content_type="application/json"
                 )
-                }
-            if retry(data_to_send):
-                # The below is left as reminder of how you did it first
-                # sms_messages_serializer.update(data={"delivery_status": True}, partial=True)
-                sms_messages_serializer.update(instance, validated_data={"delivery_status": True})
-                sms_messages_serializer.save()
+            else:
+                sms_messages_serializer.update(
+                    data={
+                        "delivery_status": True
+                    },
+                    partial=True
+                )
                 return Response(
                     data={
                         "success": "You have successfully sent the sms"
                     },
-                    status=status.HTTP_201_CREATED
+                    status=status.HTTP_201_CREATED,
+                    content_type="application/json"
                 )
-            else:
-                if not retry(data_to_send):
-                    sms_messages_serializer.update(instance, validated_data={"delivery_status": True})
-                    sms_messages_serializer.save()
-                    return Response(
-                        data={
-                            "success": "You have successfully sent the sms"
-                        },
-                        status=status.HTTP_201_CREATED
-                    )
-                    if not retry(data_to_send):
-                        sms_messages_serializer.update(instance, validated_data={"delivery_status": True})
-                        sms_messages_serializer.save()
-                        return Response(
-                            data={
-                                "success": "You have successfully sent the sms."
-                            },
-                            status=status.HTTP_201_CREATED
-                        )
-                else:
-                    sms_messages_serializer.update(instance, validated_data={"delivery_status": True})
-                    sms_messages_serializer.save()
-                    return Response(
-                        data={
-                            "error": "Your message has not been sent, please try again."
-                        },
-                        status=status.HTTP_504_GATEWAY_TIMEOUT
-                    )
