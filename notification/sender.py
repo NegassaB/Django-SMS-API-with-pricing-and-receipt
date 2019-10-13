@@ -4,9 +4,7 @@ gets a response back. It uses the requests library.
 """
 # don't be a dummy...use a try/except/else block
 import requests
-from threading import Thread
 import queue
-import concurrent.futures
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -21,8 +19,6 @@ def sender_utility(sms_data):
     sms_queue.put(sms_data)
 
     pipeline = queue.Queue(maxsize=13)
-    # TODO: do this in a thread and once the pipeline is full, aka,
-    # 14 sms's call thread sleep until all sms's are sent
     while pipeline.qsize() <= 14:
         pipeline.put(sms_queue.get())
 
@@ -34,24 +30,29 @@ def sender_utility(sms_data):
 
 def send_sms(pipeline):
     # TODO: documentation for this function
+    """
+    This function is used to to implement the sender() function on each
+    individual text. It uses the pipeline transfered from sender_utility()
+    and calls the get() method from queue for the sender() function.
+    """
     while not pipeline.qsize == 0:
         sender(pipeline.get())
-    # if not pipeline.qsize == 0:
+    # if not pipeline.qsize == 0:thread
     if not pipeline.empty():
         pipeline.join()
 
 
 def sender(sms_data):
     """
-    The actual method that accesses ethio-telecom's server and send the sms.
+    The actual fucntion that accesses the server and senda the sms.
     """
-    ethio_telecom_url = "http://10.8.0.86:5000/api/sendsms/"
+    sending_url = "http://10.8.0.86:5000/api/sendsms/"
     headers = {"content-type": "application/x-www-form-urlencoded"}
 
     try:
         response = requests.request(
             "POST",
-            ethio_telecom_url,
+            sending_url,
             data=sms_data,
             headers=headers
         )
