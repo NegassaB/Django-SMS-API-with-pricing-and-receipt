@@ -35,6 +35,28 @@ class SMSendView(APIView):
 
     serializer_class = SMSMessagesSerializer
 
+    def get(self, request):
+        """
+        This method is used to GET all created instance of the SMSMessages class that are saved in the db.
+        """
+        queryset = SMSMessages.objects.filter(sending_user=request.user)
+        while queryset:
+            return Response(
+                data={
+                    queryset.values()
+                    },
+                status=status.HTTP_200_OK,
+                content_type="application/json"
+            )
+        else:
+            return Response(
+                data={
+                    "no sms has been sent"
+                },
+                status=status.HTTP_404_NOT_FOUND,
+                content_type="application/json"
+            )
+
     def post(self, request):
         """
         This method is used to create an instance of the SMSMessages indirectly by using the SMSMessagesSerializer.
