@@ -41,6 +41,7 @@ class Type(models.Model):
     def __str__(self):
         return self.type_of_company
 
+
 """
 In the below model I used the usr foreign key to link it to the SMSuser that sent the message. In the proceeding logic
 before sending it to ethio-telecom's api use this foreign key to derive the user token and the messaging company.

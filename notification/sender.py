@@ -5,6 +5,7 @@ gets a response back. It uses the requests library.
 # don't be a dummy...use a try/except/else block
 import requests
 import queue
+import time
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -29,7 +30,6 @@ def sender_utility(sms_data):
 
 
 def send_sms(pipeline):
-    # TODO: documentation for this function
     """
     This function is used to to implement the sender() function on each
     individual text. It uses the pipeline transfered from sender_utility()
@@ -41,14 +41,19 @@ def send_sms(pipeline):
     if not pipeline.empty():
         pipeline.join()
 
+    return True
+
 
 def sender(sms_data):
     """
-    The actual fucntion that accesses the server and senda the sms.
+    The actual function that accesses the server and sends the sms.
     """
     sending_url = "http://10.8.0.86:5000/api/sendsms/"
     headers = {"content-type": "application/x-www-form-urlencoded"}
-
+    
+    # perhaps set a counter to the current time of execution and deduct a sec  in a while
+    # loop as the try block runs. If it succeeds break from while loop, if it does return until
+    # counter is 0. Then return a Response detail the error.
     try:
         response = requests.request(
             "POST",
