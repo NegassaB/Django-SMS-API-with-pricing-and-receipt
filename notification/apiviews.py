@@ -61,7 +61,7 @@ class SMSendView(APIView):
         """
         This method is used to create an instance of the SMSMessages indirectly by using the SMSMessagesSerializer.
         If that is valid it will be passed to the sender_utility() method from the notification.sender module. The serializer
-        will be saved, , aka the object will be saved to the database and then tthe sender_utility() called.Once that returns
+        will be saved, , aka the object will be saved to the database and then the sender_utility() called.Once that returns
         a True value the instance will be called, aka the object will be saved to the database with a delivery_status value
         of True.
         """
