@@ -8,6 +8,9 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.contrib.auth import authenticate
 
+import threading
+import datetime
+
 from commons.models import SMSMessages
 from commons.serializers import SMSMessagesSerializer
 from notification.sender import sender_utility
@@ -84,25 +87,37 @@ class SMSendView(APIView):
                 ]
             }
             sms_messages_serializer.save()
-            if not sender_utility(data_to_send):
-                return Response(
-                    data={
-                        "error": "sms not sent, please try again."
-                    },
-                    status=status.HTTP_504_GATEWAY_TIMEOUT,
-                    content_type="application/json"
-                )
+
+            counter = 3
+            while counter > 0:
+                --counter
+                if not sender_utility(data_to_send):
+                    return Response(
+                        data={
+                            "error": "sms not sent, please try again."
+                        },
+                        status=status.HTTP_504_GATEWAY_TIMEOUT,
+                        content_type="application/json"
+                    )
+                else:
+                    sms_messages_serializer.update(
+                        data={
+                            "delivery_status": True
+                        },
+                        partial=True
+                    )
+                    return Response(
+                        data={
+                            "success": "You have successfully sent the sms"
+                        },
+                        status=status.HTTP_201_CREATED,
+                        content_type="application/json"
+                    )
             else:
-                sms_messages_serializer.update(
-                    data={
-                        "delivery_status": True
-                    },
-                    partial=True
-                )
                 return Response(
                     data={
-                        "success": "You have successfully sent the sms"
+                        "error": "unable to send sms"
                     },
-                    status=status.HTTP_201_CREATED,
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                     content_type="application/json"
                 )

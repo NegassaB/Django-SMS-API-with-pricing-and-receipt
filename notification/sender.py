@@ -6,6 +6,7 @@ gets a response back. It uses the requests library.
 import requests
 import queue
 import time
+from datetime import datetime
 
 from rest_framework.response import Response
 from rest_framework import status
@@ -16,11 +17,12 @@ def sender_utility(sms_data):
     inputs sms data to sender_utility(), puts sms data into a queue,
     copies 14 items from sms_queue to pipeline, sends as input parameter to sender()
     """
+    time.sleep(2)
     sms_queue = queue.Queue()
     sms_queue.put(sms_data)
 
     pipeline = queue.Queue(maxsize=13)
-    while pipeline.qsize() <= 14:
+    while pipeline.qsize() <= 14 and not sms_queue.empty():
         pipeline.put(sms_queue.get())
 
     if not send_sms(pipeline):
@@ -48,32 +50,49 @@ def sender(sms_data):
     """
     The actual function that accesses the server and sends the sms.
     """
-    sending_url = "http://10.8.0.86:5000/api/sendsms/"
+    sending_url = "http://127.0.0.1:5000/api/sendsms/"
     headers = {"content-type": "application/x-www-form-urlencoded"}
-    
-    # perhaps set a counter to the current time of execution and deduct a sec  in a while
-    # loop as the try block runs. If it succeeds break from while loop, if it does return until
-    # counter is 0. Then return a Response detail the error.
-    try:
-        response = requests.request(
-            "POST",
-            sending_url,
-            data=sms_data,
-            headers=headers
-        )
-    except Exception as e:
-        # TODO: find a better thing to do with the exception
-        return Response(
-            data={
-                "error": str(e)
-            },
-            status=status.HTTP_503_SERVICE_UNAVAILABLE,
-            headers=str(e.args(1))
-        )
+
+    """
+    Used for moitoring that the try block doesn't run forever but rather for 5 seconds.
+    """
+    start_time = datetime.now()
+    start_second = start_time.second
+    end_second = start_second + 5
+
+    while start_second != end_second:
+        start_second = start_second + 1
+        # you might have to run either the counter or the try block in another
+        # thread and keep track of that.
+        try:
+            response = requests.request(
+                "POST",
+                sending_url,
+                data=sms_data,
+                headers=headers
+            )
+            if response == None:
+                return Response(data=response.data, status=response.status)
+        except Exception as e:
+            # TODO: find a better thing to do with the exception
+            return Response(
+                data={
+                    "error": str(e)
+                },
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+                headers=str(e.args(1))
+            )
+        else:
+            return Response(
+                data={
+                    "message": "sms text sent successfully!"
+                },
+                status=status.HTTP_200_OK
+            )
     else:
         return Response(
             data={
-                "message": "sms text sent successfully!"
+                "error": "unable to send sms!"
             },
-            status=status.HTTP_200_OK
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
