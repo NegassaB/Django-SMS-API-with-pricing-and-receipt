@@ -13,7 +13,7 @@ import datetime
 
 from commons.models import SMSMessages
 from commons.serializers import SMSMessagesSerializer
-from notification.sender import sender_utility
+from notification.sender import sender
 
 
 class SMSMessagesView(generics.ListCreateAPIView):
@@ -29,11 +29,10 @@ class SMSMessagesView(generics.ListCreateAPIView):
     serializer_class = SMSMessagesSerializer
 
 
-class SMSendView(APIView):
+class SMSView(APIView):
     """
-    This class is responsible for sending an sms. It send a valid, necessary bundled up data to the sender_utility() method from
-    the notification.sender module. It saves the instance using the serializer and then runs the sending function,
-    Once it recieves a boolean value from that module it updates the instance and saves it to the db.
+    This class is responsible for all the method operations of an sms. It provides implementations for the GET, POST, and OPTIONS methods.
+    Each method provides it's own description.
     """
 
     serializer_class = SMSMessagesSerializer
@@ -88,36 +87,43 @@ class SMSendView(APIView):
             }
             sms_messages_serializer.save()
 
-            counter = 3
-            while counter > 0:
-                --counter
-                if not sender_utility(data_to_send):
-                    return Response(
-                        data={
-                            "error": "sms not sent, please try again."
-                        },
-                        status=status.HTTP_504_GATEWAY_TIMEOUT,
-                        content_type="application/json"
-                    )
-                else:
-                    sms_messages_serializer.update(
-                        data={
-                            "delivery_status": True
-                        },
-                        partial=True
-                    )
-                    return Response(
-                        data={
-                            "success": "You have successfully sent the sms"
-                        },
-                        status=status.HTTP_201_CREATED,
-                        content_type="application/json"
-                    )
-            else:
+        # TODO this is used to test so find a better name
+        run_again = True
+        while run_again:
+            # the following are the return values of the
+            # sender() function from the notification.sender module
+            # TODO find better names
+            x, y = sender(data_to_send)
+            if not x:
                 return Response(
                     data={
-                        "error": "unable to send sms"
+                        "error": f"{y.text}"
                     },
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    status=y.status_code,
                     content_type="application/json"
                 )
+            else:
+                sms_messages_serializer.update(
+                    data={
+                        "delivery_status": True
+                    },
+                    partial=True
+                )
+                run_again = False
+                return Response(
+                    data={
+                        "success": f"{y.json()}"
+                    },
+                    headers=y.headers,
+                    status=y.status_code,
+                    content_type="application/json"
+                )
+        else:
+            run_again = False
+            return Response(
+                data={
+                    "error": "unable to send sms"
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                content_type="application/json"
+            )

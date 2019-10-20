@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework.authtoken import views
 from rest_framework.routers import DefaultRouter
 
-from notification.apiviews import SMSendView, SMSMessagesView
+from notification.apiviews import SMSView, SMSMessagesView
 
 app_name = "notification"
 
@@ -11,6 +11,6 @@ router = DefaultRouter()
 
 urlpatterns = [
     path('smsmessages/', SMSMessagesView.as_view(), name="sms_messages"),
-    path('sendsms/', SMSendView.as_view(), name="send_sms"),
-    path('viewsms/', SMSendView.as_view(), name="view_sms"),
+    path('sendsms/', SMSView.as_view(), name="send_sms"),
+    path('viewsms/', SMSView.as_view(), name="view_sms"),
 ]
