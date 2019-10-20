@@ -62,10 +62,10 @@ class SMSView(APIView):
     def post(self, request):
         """
         This method is used to create an instance of the SMSMessages indirectly by using the SMSMessagesSerializer.
-        If that is valid it will be passed to the sender_utility() method from the notification.sender module. The serializer
-        will be saved, , aka the object will be saved to the database and then the sender_utility() called.Once that returns
-        a True value the instance will be called, aka the object will be saved to the database with a delivery_status value
-        of True.
+        If that is valid it will be passed to the sender() method from the notification.sender module. The serializer
+        will be saved, aka the object will be saved to the database, and then the sender() is called. It will run three
+        times before it gives up and fails. Once that returns a True value the instance will be called, aka the object
+        will be saved to the database, with a delivery_status value of True.
         """
         sms_messages_serializer = SMSMessagesSerializer(
             data={
@@ -87,19 +87,18 @@ class SMSView(APIView):
             }
             sms_messages_serializer.save()
 
-        # TODO this is used to test so find a better name
-        run_again = True
-        while run_again:
-            # the following are the return values of the
-            # sender() function from the notification.sender module
-            # TODO find better names
-            x, y = sender(data_to_send)
-            if not x:
-                return Response(
+        # TODO refactor this into it's own function
+        retry_counter = 0
+        resp = Response()
+        while retry_counter < 3:
+            status_flag, status_response = sender(data_to_send)
+            retry_counter += 1
+            if not status_flag:
+                resp = Response(
                     data={
-                        "error": f"{y.text}"
+                        "error": f"{status_response.text}"
                     },
-                    status=y.status_code,
+                    status=status_response.status_code,
                     content_type="application/json"
                 )
             else:
@@ -109,21 +108,21 @@ class SMSView(APIView):
                     },
                     partial=True
                 )
-                run_again = False
-                return Response(
+                resp = Response(
                     data={
                         "success": f"{y.json()}"
                     },
-                    headers=y.headers,
-                    status=y.status_code,
+                    headers=status_response.headers,
+                    status=status_response.status_code,
                     content_type="application/json"
                 )
+                return resp
         else:
-            run_again = False
-            return Response(
+            resp = Response(
                 data={
                     "error": "unable to send sms"
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 content_type="application/json"
             )
+            return resp
