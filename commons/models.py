@@ -12,7 +12,7 @@ class SMSUser(AbstractUser):
     last_name = models.CharField(max_length=100)
     company_name = models.CharField(max_length=150)
     # make the value 1 in the db an unset value and the rest the actual values
-    sms_price = models.ForeignKey("SMSPrice", related_name="sms_prices", on_delete=models.PROTECT)
+    sms_price = models.ForeignKey("SMSPrice", related_name="sms_prices", on_delete=models.PROTECT, default=1)
 
     class Meta:
         verbose_name_plural = "SMSUsers"
@@ -22,6 +22,7 @@ class SMSUser(AbstractUser):
 
 
 class SMSPrice(models.Model):
+    # change to floatField
     set_price = models.CharField(max_length=25)
     price_desc = models.CharField(max_length=100)
     # make the value 1 in the db an unset value and the rest the actual values
@@ -40,6 +41,7 @@ class Type(models.Model):
     def __str__(self):
         return self.type_of_company
 
+
 """
 In the below model I used the usr foreign key to link it to the SMSuser that sent the message. In the proceeding logic
 before sending it to ethio-telecom's api use this foreign key to derive the user token and the messaging company.
@@ -50,10 +52,12 @@ Btw I have decided to leave the msg_key attribute to the login info and have it 
 class SMSMessages(models.Model):
     sms_number_to = models.CharField(max_length=14)
     sms_content = models.CharField(max_length=160)
-    sender_company = models.ForeignKey("SMSUser", on_delete=models.PROTECT, related_name="company_that_sent", limit_choices_to=1)
+    sending_user = models.ForeignKey("SMSUser", on_delete=models.PROTECT, related_name="user_that_sent")
+    sent_date = models.DateTimeField(auto_now=True)
+    delivery_status = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = "SMSMessages"
 
     def __str__(self):
-        return self.sender_company
+        return str(self.sending_user)
