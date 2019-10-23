@@ -88,11 +88,11 @@ class SMSView(APIView):
             sms_messages_serializer.save()
 
         # TODO refactor this into it's own function
-        retry_counter = 0
+        max_retry = 0
         resp = Response()
-        while retry_counter < 3:
+        while max_retry < 3:
+            max_retry += 1
             status_flag, status_response = sender(data_to_send)
-            retry_counter += 1
             if not status_flag:
                 resp = Response(
                     data={
@@ -110,7 +110,7 @@ class SMSView(APIView):
                 )
                 resp = Response(
                     data={
-                        "success": f"{y.json()}"
+                        "success": f"{status_response.json()}"
                     },
                     headers=status_response.headers,
                     status=status_response.status_code,
