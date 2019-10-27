@@ -43,7 +43,7 @@ class Type(models.Model):
 
 
 """
-In the below model I used the usr foreign key to link it to the SMSuser that sent the message. In the proceeding logic
+In the below model I used the user foreign key to link it to the SMSuser that sent the message. In the proceeding logic
 before sending it to ethio-telecom's api use this foreign key to derive the user token and the messaging company.
 Btw I have decided to leave the msg_key attribute to the login info and have it transfered via the authorization header.
 """

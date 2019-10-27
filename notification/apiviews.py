@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate
 
 import threading
 import datetime
+import json
 
 from commons.models import SMSMessages
 from commons.serializers import SMSMessagesSerializer
@@ -78,14 +79,15 @@ class SMSView(APIView):
 
         if sms_messages_serializer.is_valid():
             data_to_send = {
-                "phone_number": sms_messages_serializer.validated_data[
+                "number": sms_messages_serializer.validated_data[
                     "sms_number_to"
                 ],
-                "content": sms_messages_serializer.validated_data[
+                "msg_text": sms_messages_serializer.validated_data[
                     "sms_content"
                 ]
             }
-            sms_messages_serializer.save()
+            # used for the instance, find a better name
+            sms_object = sms_messages_serializer.save()
 
         # TODO refactor this into it's own function
         max_retry = 0
@@ -93,24 +95,28 @@ class SMSView(APIView):
         while max_retry < 3:
             max_retry += 1
             status_flag, status_response = sender(data_to_send)
+
             if not status_flag:
                 resp = Response(
                     data={
-                        "error": f"{status_response.text}"
+                        "status": "sms not sent"
                     },
                     status=status_response.status_code,
                     content_type="application/json"
                 )
             else:
+                # the update method defined in the SMSMessagesSerializer class
+                # needs an instance to run with, so that's what has been changed.
+                # The data attribute has been removed.
                 sms_messages_serializer.update(
-                    data={
+                    sms_object,
+                    {
                         "delivery_status": True
-                    },
-                    partial=True
+                    }
                 )
                 resp = Response(
                     data={
-                        "success": f"{status_response.json()}"
+                        "status": "sms successfully sent."
                     },
                     headers=status_response.headers,
                     status=status_response.status_code,

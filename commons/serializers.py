@@ -80,5 +80,7 @@ class SMSMessagesSerializer(serializers.ModelSerializer):
             """
             instance = self.get_object()
             instance.delivery_status = validated_data.get('delivery_status', instance.delivery_status)
-            instance.save()
+            # checks if the instance is valid before saving it into db, don't know what happens if it fails tho
+            if instance.is_valid():
+                instance.save()
             return instance

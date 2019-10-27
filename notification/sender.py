@@ -14,7 +14,7 @@ def sender(sms_data):
     """
     The actual function that accesses the server and sends the sms.
     """
-    sending_url = "http://10.8.0.86:5000/api/sendsms/"
+    sending_url = "http://localhost:5000/api/sendsms/"
     sending_headers = {"content-type": "application/x-www-form-urlencoded"}
 
     response = requests.Response()
@@ -26,6 +26,7 @@ def sender(sms_data):
             timeout=(3, 6),
         )
         response.raise_for_status()
+        # TODO: log all responses from sms_server here and send your own responses to user
     except Exception as e:
         # TODO: find a better thing to do with the exception
         # perhaps a log file, like the below one
