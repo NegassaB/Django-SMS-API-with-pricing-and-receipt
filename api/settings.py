@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # my own
     'commons',
     'notification',
+    'ui',
 ]
 
 MIDDLEWARE = [

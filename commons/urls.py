@@ -7,7 +7,7 @@ from rest_framework.routers import DefaultRouter
 
 # if you need a custom login, you can import LoginView and LoginView.as_view() in the path
 from commons.apiviews import TypeList, TypeDetail, SMSPriceList, SMSPriceDetail, SMSUserCreate, SMSUserUpdate, SMSUserViewSet
-from .views import homepage
+
 """
 describe the entire urlpattern here.
 """
