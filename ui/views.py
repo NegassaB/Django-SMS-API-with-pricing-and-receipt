@@ -21,14 +21,14 @@ def login_request(request):
     This function is used to login all users except the admin of the entire site.
     It makes an api call to the LoginView defined in commons.apiviews with
     the necessary parameters and renders the necessary html file accordingly.
-    It gets the necessary data from the request.session variable.
+    It gets the necessary data from the request.POST variable.
     """
     if request.method == 'POST':
         # login_response = request_library.Response()
         try:
             user_data = {
-                "username": request.POST['username'],
-                "password": request.POST['password']
+                "username": request.POST.get('username'),
+                "password": request.POST.get('password')
             }
 
             login_response = request_library.post(
@@ -44,12 +44,28 @@ def login_request(request):
             # TODO find a better thing to do with the exception
             with open('login_tries.txt', 'a') as login_response_objects:
                 login_response_objects.write(str(e) + "\n\n")
+
+            messages.error(request, "Incorrect username or password")
+            return render(request=request, template_name="ui/login.html")
         else:
             if login_response is not None:
                 # user_token = login_response.token
-                messages.info(request, f"You are now logged in as {request.data.get('username')}")
-                return redirect('ui/dashboard.html')
+                messages.info(request, f"You are now logged in as {user_data['username']}")
+                return redirect('ui:dashboard')
             else:
-                return HttpResponse("didn't work")
+                messages.error(request, "Incorrect username or password")
+    else:
+        messages.error(request, "Incorrect username or password")
+        return render(request=request, template_name="ui/login.html")
 
-    return render(request=request, template_name="ui/login.html", context={})
+
+def logout_request(request):
+    pass
+
+
+def dashboard(request):
+    """
+    This function is used to parse and display the dashboard of the user and his/hers interaction
+    with the api.
+    """
+    return render(request=request, template_name="ui/dashboard.html", context={})
