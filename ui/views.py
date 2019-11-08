@@ -24,16 +24,16 @@ def login_request(request):
     It gets the necessary data from the request.POST variable.
     """
     if request.method == 'POST':
-        # login_response = request_library.Response()
         try:
-            user_data = {
+            # TODO put this into it's own function
+            payload = {
                 "username": request.POST.get('username'),
                 "password": request.POST.get('password')
             }
 
             login_response = request_library.post(
                 "http://localhost:8055/commons/login/",
-                data=user_data,
+                data=payload,
                 headers={
                     'content-type': "application/x-www-form-urlencoded"
                 },
@@ -49,8 +49,9 @@ def login_request(request):
             return render(request=request, template_name="ui/login.html")
         else:
             if login_response is not None:
-                # user_token = login_response.token
-                messages.info(request, f"You are now logged in as {user_data['username']}")
+                user_token = login_response.text
+                messages.info(request, f"You are now logged in as {payload['username']}")
+                messages.info(request, f"{user_token}")
                 return redirect('ui:dashboard')
             else:
                 messages.error(request, "Incorrect username or password")
