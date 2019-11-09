@@ -61,7 +61,9 @@ def login_request(request):
 
 
 def logout_request(request):
-    pass
+    user_token = None
+    messages.info(request, "logged out successfully!")
+    return redirect("ui:homepage")
 
 
 def dashboard(request):
