@@ -6,8 +6,8 @@ from rest_framework.authtoken import views
 from rest_framework.routers import DefaultRouter
 
 # if you need a custom login, you can import LoginView and LoginView.as_view() in the path
-from commons.apiviews import TypeList, TypeDetail, SMSPriceList, SMSPriceDetail, SMSUserCreate, SMSUserUpdate, SMSUserViewSet
-from .views import homepage
+from commons.apiviews import TypeList, TypeDetail, SMSPriceList, SMSPriceDetail, SMSUserCreate, SMSUserUpdate, SMSUserViewSet, LoginView, LogoutView
+
 """
 describe the entire urlpattern here.
 """
@@ -32,8 +32,12 @@ urlpatterns = [
     path('smsusers/update/<int:pk>/', SMSUserUpdate.as_view(), name="update_sms_user"),
     # for displaying all the instances of smsuser, presented as_view()
     # path("smsusers/", SMSUserViewSet, name="view_all_sms_users"),
-    # for logining in a user by obtaining an authorization token
-    path('login/', views.obtain_auth_token, name="login"),
+    # for loging in using the LoginView
+    path('login/', LoginView.as_view(), name="login"),
+    # for logining in a user by using DRF to obtain an authorization token
+    # path('login/', views.obtain_auth_token, name="login"),
+    # for logging out a user by deleting authorization token
+    path('logout/', LogoutView.as_view(), name='logout')
 ]
 
 urlpatterns += router.urls
