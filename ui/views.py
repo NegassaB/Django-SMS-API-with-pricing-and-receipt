@@ -61,9 +61,27 @@ def login_request(request):
 
 
 def logout_request(request):
-    user_token = None
-    messages.info(request, "logged out successfully!")
-    return redirect("ui:homepage")
+    if request.method == 'GET':
+        try:
+            logout_response = request_library.get(
+                "http://localhost:8055/commons/logout",
+                headers={
+                    'content-type': "application/x-www-form-urlencoded"
+                },
+                timeout=(3, 6)
+            )
+        except Exception as e:
+            with open('logout_tries.txt', 'a') as logout_response_objects:
+                logout_response_objects.write(str(e) + "\n\n")
+
+            messages.error(request, "Unable to logout")
+            return render(request=request, template_name="ui/dasboard.html")
+        else:
+            messages.info(logout_response['message'])
+            return redirect('ui:homepage')
+    else:
+        messages.error(request, "Unable to log out")
+        return render(request=request, template_name="ui/dashboard.html")
 
 
 def dashboard(request):
