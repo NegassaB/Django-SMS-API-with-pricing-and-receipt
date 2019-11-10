@@ -13,7 +13,7 @@ all user interface/experience is done and used here.
 
 
 def homepage(request):
-    return render(request=request, template_name="ui/homepage.html")
+    return render(request=request, template_name="ui/index.html")
 
 
 def login_request(request):
