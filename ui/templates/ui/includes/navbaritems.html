@@ -7,11 +7,23 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            {% if user_token is not None %}
         <div class="navbar-nav navbarColor02">
-            <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
-            <a class="nav-item nav-link" href="#">Feature</a>
-            <a class="nav-item nav-link" href="#">Pricing</a>
-            <a class="nav-item nav-link" href="#">Disabled</a>
+            <a class="nav-item nav-link active" href="/ui/dashboard">Dashboard <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" href="#">Account</a>
+            <button class="btn btn-link btn-light justify-content-end " type="button" id="logout_button">Logout</button>
+            {% else %}
+                <a class="nav-item nav-link active text-white" href="/ui/homepage/">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link text-white" href="#">Features</a>
+                <a class="nav-item nav-link text-white" href="#">Team</a>
+                <a class="nav-item nav-link text-white" href="#">Pricing</a>
+                <a class="nav-item nav-link text-white" href="#">Services</a>
+                <a class="nav-item nav-link text-white" href="#">Contact</a>
         </div>
+        <div class="nav justify-content-end">
+                <button class="btn btn-link btn-light mr-1" type="button" id="login_button">Login</button>
+                <button class="btn btn-link btn-light ml-2" type="button" id="register_button">Register</button>
+        </div>
+            {% endif %}
     </div>
 </nav>

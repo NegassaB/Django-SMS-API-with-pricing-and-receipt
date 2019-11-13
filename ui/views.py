@@ -89,4 +89,11 @@ def dashboard(request):
     This function is used to parse and display the dashboard of the user and his/hers interaction
     with the api.
     """
-    return render(request=request, template_name="ui/dashboard.html", context={})
+    return render(request=request, template_name="ui/dashboard.html")
+
+
+def register_request(request):
+    # checks if email is valid
+    # checks if username is not previously registered
+    # creates user using the api end-point
+    return render(request=request, template_name="ui/register.html")
