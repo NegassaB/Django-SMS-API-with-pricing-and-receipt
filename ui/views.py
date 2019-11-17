@@ -27,8 +27,8 @@ def login_request(request):
         try:
             # TODO put this into it's own function
             payload = {
-                "username": request.POST.get('username'),
-                "password": request.POST.get('password')
+                "username": request.POST.get('logusername'),
+                "password": request.POST.get('logpassword')
             }
 
             login_response = request_library.post(
