@@ -3,10 +3,10 @@
     <a class="navbar-brand" href="#">
         <img src="{% static 'ui/images/logo.jpg' %}" width="30" height="30" class="d-inline-block align-top" alt="">
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle Navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-main-navigation" aria-controls="navbar-main-navigation" aria-expanded="false" aria-label="Toggle Navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="collapse navbar-collapse" id="navbar-main-navigation">
             {% if user_token.is_set %}
         <div class="navbar-nav navbarColor02">
             <a class="nav-item nav-link active" href="/ui/dashboard">Dashboard <span class="sr-only">(current)</span></a>
@@ -19,10 +19,10 @@
                 <a class="nav-item nav-link text-white" href="#">Pricing</a>
                 <a class="nav-item nav-link text-white" href="#">Services</a>
                 <a class="nav-item nav-link text-white" href="#">Contact</a>
-        </div>
-        <div class="nav justify-content-end">
-                <button class="btn btn-link btn-light mr-1" type="button" id="login_button">Login</button>
-                <button class="btn btn-link btn-light ml-2" type="button" id="register_button">Register</button>
+                <div class="nav justify-content-end">
+                    <button class="btn btn-link btn-light mr-1" type="button" id="login_button">Login</button>
+                    <button class="btn btn-link btn-light ml-2" type="button" id="register_button">Register</button>
+                </div>
         </div>
             {% endif %}
     </div>
