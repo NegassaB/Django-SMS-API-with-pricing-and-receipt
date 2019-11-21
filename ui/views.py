@@ -135,12 +135,8 @@ def register_request(request):
                 messages.error(request, "Unable to register, please try again!")
             else:
                 messages.success(request, "Successfully created your sms.et account, redirecting to your dashboard....")
-                return redirect(
-                    'ui:dashboard'
-                    # {
-                    #     'username': registration_data_payload.get('username')
-                    # }
-                )
+                # TODO give the username to the redirect function
+                return redirect('ui:login')
 
         elif check_username_result_flag == True:
             messages.error(request, "This username exists, please try again.")
