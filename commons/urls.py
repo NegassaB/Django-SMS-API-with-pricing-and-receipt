@@ -37,7 +37,7 @@ urlpatterns = [
     # for logining in a user by using DRF to obtain an authorization token
     # path('login/', views.obtain_auth_token, name="login"),
     # for logging out a user by deleting authorization token
-    path('logout/', LogoutView.as_view(), name='logout')
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]
 
 urlpatterns += router.urls
