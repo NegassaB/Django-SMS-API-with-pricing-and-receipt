@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
     <head>
         <title>sms.et</title>
         {% load static %}
@@ -13,17 +11,3 @@
         <!-- mobile first -->
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     </head>
-    <body class="text-center">
-            {%include 'ui/includes/navbaritems.html' %}
-        <div class="container">
-        <br>
-        {% block content %}
-        {% endblock %}
-        </div>
-        <!-- bootstrap 4 js -->
-    <script src="{% static 'ui/js/bootstrap.bundle.min.js' %}"></script>
-    <!-- api interacting js -->
-    <script src="{%static 'ui/js/apiInteractor.js' %}"></script>
-    </body>
-    <footer></footer>
-</html>

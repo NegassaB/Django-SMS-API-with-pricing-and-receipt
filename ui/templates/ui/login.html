@@ -1,4 +1,4 @@
-{% extends 'ui/header.html' %}
+{% extends 'ui/base.html' %}
 {% load static %}
 
 {% block content %}
@@ -7,14 +7,14 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12">
-            <form class="form-signin" method="POST" name="form">
+            <form class="form-signin" method="POST" name="login_form">
                 {% csrf_token %}
                 <img class="mb-4" src="{% static 'ui/images/logo.jpg' %}" alt="sms.et logo" width="72" height="72">
                 <h1 class="h3 mb-3 font-weight-normal">Please Login</h1>
                 <label for="inputUsername" class="sr-only">Username</label>
-                <input type="text" id="username" class="form-control" placeholder="Username" required autofocus name="username">
+                <input type="text" id="logusername" class="form-control" placeholder="Username" required autofocus name="logusername">
                 <label for="inputPassword" class="sr-only">Password</label>
-                <input type="password" id="password" class="form-control" placeholder="Password" required name="password">
+                <input type="password" id="logpassword" class="form-control" placeholder="Password" required name="logpassword">
                 <div class="checkbox mb-3">
                     <label>
                         <input type="checkbox" value="remember-me"> Remember me

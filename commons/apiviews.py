@@ -188,7 +188,7 @@ class LoginView(APIView):
 
 class LogoutView(APIView):
     def get(self, request):
-        user_logout = logout(request.user)
+        # user_logout = logout(request.user)
         if user_logout:
             return Response(
                 {
