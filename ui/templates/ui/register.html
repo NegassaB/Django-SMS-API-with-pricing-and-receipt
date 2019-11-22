@@ -4,7 +4,7 @@
 <div class="container-fluid align-items-center align-middle">
     <div class="row col-sm-12">
         <div class="col-lg-8 col-md-10 col-sm-12 mx-auto">
-            <form class="form-group " method="POST" name="register_form">
+            <form class="form-group " method="POST" name="register_form" enctype="application/x-www-form-urlencoded">
                 {% csrf_token %}
                 <img class="mb-4" src="{% static 'ui/images/logo.jpg' %}" alt="sms.et logo" width="72" height="72">
                 <h1 class="h3 mb-3 font-weight-normal">Registration</h1>
