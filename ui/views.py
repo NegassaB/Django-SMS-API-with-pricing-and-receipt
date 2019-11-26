@@ -48,19 +48,19 @@ def login_request(request):
                 login_response_objects.write(str(e) + "\n\n")
 
             messages.error(request, "Incorrect username or password")
-            # return render(request=request, template_name="ui/login.html")
+            return render(request=request, template_name="ui/login.html")
         else:
             if login_response is not None:
                 user_token = login_response.text
-                messages.info(request, f"You are now logged in as {payload['username']}")
+                messages.success(request, f"You are now logged in as {payload['username']}")
                 messages.info(request, f"{user_token}")
                 return redirect('ui:dashboard')
             else:
                 messages.error(request, "Incorrect username or password")
+                returnrender(request=request, template_name="ui/login.html")
     else:
-        messages.error(request, "Incorrect username or password")
-        # return render(request=request, template_name="ui/login.html")
-
+        return render(request=request, template_name="ui/login.html")
+    
 
 def logout_request(request):
     if request.method == 'GET':
@@ -93,7 +93,7 @@ def dashboard(request):
     This function is used to parse and display the dashboard of the user and his/hers interaction
     with the api.
     """
-    return render(request=request, template_name="ui/dashboard.html")
+    return render(request=request, template_name="ui/dashboard.html", context={})
 
 
 def register_request(request):
