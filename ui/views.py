@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse
 
-from .checking_utility import check_username_for_registration
+from .checking_utility import check_username_for_registration, check_username
 
 # Create your views here.
 
@@ -59,7 +59,7 @@ def login_request(request):
                 messages.error(request, "Incorrect username or password")
                 returnrender(request=request, template_name="ui/login.html")
     else:
-        messages.info(request, "Please login")
+        # messages.info(request, "Please login")
         return render(request=request, template_name="ui/login.html")
     
 
@@ -88,15 +88,13 @@ def logout_request(request):
 
 
 def dashboard(request, username):
-    # TODO create this with accounts in mind, meaning give the username in the parameter
-    # TODO and build accordingly
     """
     This function is used to parse and display the dashboard of the user and his/hers interaction
     with the api.
     If it's redirected from the login, it will get the username and the login status from the request
     and pass that to the dashboard.html template.
     """
-    if username:
+    if username and check_username(username):
         return render(
             request=request,
             template_name="ui/dashboard.html",
@@ -105,7 +103,9 @@ def dashboard(request, username):
                 "username": username
             })
     else:
-        return render(request=request, template_name="ui/dashboard.html", context={})
+        messages.error(request, "username doesn't exist")
+        # return render(request=request, template_name="ui/all404.html", context={"error":"username doesn't exist"})
+        return redirect('ui:login')
 
 
 def register_request(request):
