@@ -57,7 +57,7 @@ def login_request(request):
                 return redirect('ui:dashboard', username=payload['username'])
             else:
                 messages.error(request, "Incorrect username or password")
-                returnrender(request=request, template_name="ui/login.html")
+                return render(request=request, template_name="ui/login.html")
     else:
         # messages.info(request, "Please login")
         return render(request=request, template_name="ui/login.html")
@@ -153,6 +153,7 @@ def register_request(request):
         elif check_username_result_flag == True:
             messages.error(request, "This username exists, please try again.")
         else:
-            messages.error(request, "Problem encountered, please try again.")
+            # messages.error(request, "Problem encountered, please try again.")
+            return render(request=request, template_name="ui/all404.html", context={"error": "Problem encountered, please try again."})
 
     return render(request=request, template_name="ui/register.html")
