@@ -52,13 +52,14 @@ def login_request(request):
         else:
             if login_response is not None:
                 user_token = login_response.text
-                messages.success(request, f"You are now logged in as {payload['username']}")
+                messages.success(request, f"You are now logged in as {payload['username']}", fail_silently=True)
                 messages.info(request, f"{user_token}")
-                return redirect('ui:dashboard')
+                return redirect('ui:dashboard', username=payload['username'])
             else:
                 messages.error(request, "Incorrect username or password")
                 returnrender(request=request, template_name="ui/login.html")
     else:
+        messages.info(request, "Please login")
         return render(request=request, template_name="ui/login.html")
     
 
@@ -86,14 +87,25 @@ def logout_request(request):
         # return render(request=request, template_name="ui/dashboard.html")
 
 
-def dashboard(request):
+def dashboard(request, username):
     # TODO create this with accounts in mind, meaning give the username in the parameter
     # TODO and build accordingly
     """
     This function is used to parse and display the dashboard of the user and his/hers interaction
     with the api.
+    If it's redirected from the login, it will get the username and the login status from the request
+    and pass that to the dashboard.html template.
     """
-    return render(request=request, template_name="ui/dashboard.html", context={})
+    if username:
+        return render(
+            request=request,
+            template_name="ui/dashboard.html",
+            context={
+                "login_successful": True,
+                "username": username
+            })
+    else:
+        return render(request=request, template_name="ui/dashboard.html", context={})
 
 
 def register_request(request):

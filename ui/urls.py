@@ -21,7 +21,7 @@ app_name = "ui"
 urlpatterns = [
     path('homepage/', views.homepage, name="homepage"),
     path('login/', views.login_request, name="login"),
-    path('dashboard/', views.dashboard, name="dashboard"),
+    path('dashboard/<username>/', views.dashboard, name="dashboard"),
     path('logout/', views.logout_request, name="logout"),
     path('register/', views.register_request, name="register"),
 ]
