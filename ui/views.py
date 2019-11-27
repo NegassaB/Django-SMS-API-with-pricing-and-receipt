@@ -134,7 +134,7 @@ def register_request(request):
                 
                 messages.error(request, "Unable to register, please try again!")
             else:
-                messages.success(request, "Successfully created your sms.et account, redirecting to your dashboard....")
+                messages.success(request, "Successfully created your sms.et account, please login to your account.")
                 # TODO give the username to the redirect function
                 return redirect('ui:login')
 
