@@ -53,7 +53,7 @@ def login_request(request):
             if login_response is not None:
                 user_token = login_response.text
                 messages.success(request, f"You are now logged in as {payload['username']}", fail_silently=True)
-                messages.info(request, f"{user_token}")
+                # messages.info(request, f"{user_token}")
                 return redirect('ui:dashboard', username=payload['username'])
             else:
                 messages.error(request, "Incorrect username or password")
