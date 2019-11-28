@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse
 
-from .checking_utility import check_username_for_registration, check_username
+from .checking_utility import check_username_for_registration, check_username, get_total_msgs
 
 # Create your views here.
 
@@ -94,13 +94,15 @@ def dashboard(request, username):
     If it's redirected from the login, it will get the username and the login status from the request
     and pass that to the dashboard.html template.
     """
-    if username and check_username(username):
+    check_username_flag, username_user_token = check_username(username)
+    if username and check_username_flag:
         return render(
             request=request,
             template_name="ui/dashboard.html",
             context={
                 "login_successful": True,
-                "username": username
+                "username": username,
+                "user_token": username_user_token
             })
     else:
         messages.error(request, "username doesn't exist")
@@ -111,13 +113,14 @@ def dashboard(request, username):
 def ajax_dashboard_update(request):
     """
     This function is used to generate the view for the ajax requests that will come from the ui.
-    It will get the user token from the ajax request and then get all the text messages sent by
-    that user from the database. It will also calculate how much has been sent in the last 5 minutes.
+    It will get the user token from the ajax request and then gets all the text messages sent by
+    that user from the get_total_msgs() function declared in checking_utility. It will also
+    calculate how much has been sent in the last 5 minutes.
     """
-    if request.method == 'GET':
+    if request.is_ajax():
         # the username of the user that has sent the texts
         ajax_user_token = request.GET['ajaxUserToken']
-
+        total_msgs = get_total_msgs(ajax_user_token)
     else:
         pass
 

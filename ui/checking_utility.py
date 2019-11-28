@@ -1,4 +1,6 @@
 import requests as request_library
+from rest_framework.authtoken.models import Token
+from commons.models import SMSUser
 
 base_url = "http://localhost:8055/"
 
@@ -73,4 +75,34 @@ def check_username(username):
 
 
 def get_user_token(username):
-    pass
+    """
+    This function is responsible for getting the user token from the database
+    by searching using the username. The way it's works is, it searches for
+    that user in the SMSUser model first and uses that object to search for
+    the token key from the Token model. There might be a better way of doing
+    this than the way I did it below but since time is running out I have to do
+    it this way and then try to improve it in the future.
+    """
+    return Token.objects.get(user=SMSUser.objects.get(username=username))
+
+
+def get_total_msgs(user_token):
+    """
+    This function is called by  the ajax_dashboard_update function from the views module.
+    It sums up all the sms text messages sent by the user identified by the user_token.
+    """
+    try:
+        get_msgs = request_library.get(
+            base_url + "notification/sendsms/",
+            headers=
+            {
+                'content-type': "application/x-www-form-urlencoded"
+            },
+            timeout=(3, 6)
+        )
+    except Exception as e:
+        with open('get_user_sent_messages_tries.txt', 'a') as gusm_object:
+            gusm_object.write(str(e) + "\n\n")
+    else:
+        # count the number of json objects returned from get_msgs
+        pass
