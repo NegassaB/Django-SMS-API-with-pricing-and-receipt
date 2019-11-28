@@ -51,6 +51,7 @@ def check_username(username):
     It will send a get request to the api endpoint and parse it's response accordingly. It
     then checks if the username provided is in the response object and if it is returns a True
     value. If it's not it returns a False value.
+    It will also return the user_token for that username so as it can be used in the dashboard.
     """
     username_to_check = username
     try:
@@ -66,6 +67,10 @@ def check_username(username):
             return False
     else:
         if username_to_check in check_username_for_existence.text:
-            return True
+            return True, get_user_token(username_to_check)
         else:
             return False
+
+
+def get_user_token(username):
+    pass

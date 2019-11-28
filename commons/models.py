@@ -18,7 +18,7 @@ class SMSUser(AbstractUser):
         verbose_name_plural = "SMSUsers"
 
     def __str__(self):
-        return self.company_name
+        return self.username
 
 
 class SMSPrice(models.Model):

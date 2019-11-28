@@ -108,6 +108,20 @@ def dashboard(request, username):
         return redirect('ui:login')
 
 
+def ajax_dashboard_update(request):
+    """
+    This function is used to generate the view for the ajax requests that will come from the ui.
+    It will get the user token from the ajax request and then get all the text messages sent by
+    that user from the database. It will also calculate how much has been sent in the last 5 minutes.
+    """
+    if request.method == 'GET':
+        # the username of the user that has sent the texts
+        ajax_user_token = request.GET['ajaxUserToken']
+
+    else:
+        pass
+
+
 def register_request(request):
     """
     This function is used to register all users from the ui. It first sends the request to
