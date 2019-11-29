@@ -30,5 +30,8 @@
     </div>
     <input type="hidden" name="userToken" id="ajaxUserToken" value="{{ user_token }}">
 </div>
+{% endblock %}
+{% block scripts %}
+<!-- for updatedashboard with ajax js -->
 <script src="{% static 'ui/js/updatedashboard.js' %}"></script>
 {% endblock %}

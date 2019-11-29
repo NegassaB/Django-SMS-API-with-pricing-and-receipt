@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 import requests as request_library
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 from .checking_utility import check_username_for_registration, check_username, get_total_msgs
 
@@ -119,10 +119,13 @@ def ajax_dashboard_update(request):
     """
     if request.is_ajax():
         # the username of the user that has sent the texts
-        ajax_user_token = request.GET['ajaxUserToken']
+        ajax_user_token = request.POST.get('ajaxUserToken')
         total_msgs = get_total_msgs(ajax_user_token)
-    else:
-        pass
+        return JsonResponse(
+            {
+                'total_msgs': total_msgs
+            }
+        )
 
 
 def register_request(request):
