@@ -2,6 +2,8 @@ import requests as request_library
 from rest_framework.authtoken.models import Token
 from commons.models import SMSUser
 
+import json
+
 base_url = "http://localhost:8055/"
 
 """
@@ -96,7 +98,8 @@ def get_total_msgs(user_token):
             base_url + "notification/sendsms/",
             headers=
             {
-                'content-type': "application/x-www-form-urlencoded"
+                'content-type': "application/x-www-form-urlencoded",
+                'authorization': "token " + user_token
             },
             timeout=(3, 6)
         )
@@ -104,5 +107,12 @@ def get_total_msgs(user_token):
         with open('get_user_sent_messages_tries.txt', 'a') as gusm_object:
             gusm_object.write(str(e) + "\n\n")
     else:
-        # count the number of json objects returned from get_msgs
-        pass
+        # it counts the number of unique ids' are in the response meaning
+        # there amount of text message sent.
+        counter = 0
+        json_data = json.loads(get_msgs.text)
+        for result in json_data['result_objects']:
+            if result['id']:
+                counter += 1
+        
+        return counter

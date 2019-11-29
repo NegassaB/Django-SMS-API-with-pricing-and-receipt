@@ -28,6 +28,7 @@
             </div>
         </div>
     </div>
+    <input type="hidden" name="csrfToken" id="ajaxCsrfToken" value="{{ csrf_token }}">
     <input type="hidden" name="userToken" id="ajaxUserToken" value="{{ user_token }}">
 </div>
 {% endblock %}
