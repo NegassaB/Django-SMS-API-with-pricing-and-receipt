@@ -15,17 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from commons.views import homepage
+from ui.views import homepage
 
 urlpatterns = [
     # for the homepage
-    path('', homepage, name="homepage" ),
+    path('homepage/', homepage, name="homepage"),
     # for the admin page
     path('admin/', admin.site.urls),
     # for the commons app
     path('commons/', include('commons.urls')),
     # for the notification app
-    path('notification/', include('notification.urls'))
+    path('notification/', include('notification.urls')),
+    # for the ui app
+    path('ui/', include('ui.urls')),
     # Read the below N.B.
     # re_path(r'^api-auth/', include('rest_framework.urls')),
 ]

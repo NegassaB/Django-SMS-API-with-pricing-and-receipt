@@ -1,0 +1,31 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="#">
+        <img src="{% static 'ui/images/logo.jpg' %}" width="30" height="30" class="d-inline-block align-top" alt="">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-main-navigation" aria-controls="navbar-main-navigation" aria-expanded="false" aria-label="Toggle Navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbar-main-navigation">
+            {% if login_successful %}
+        <div class="navbar-nav navbarColor02">
+            <a class="nav-item nav-link active" href="/ui/dashboard/{{username}}/">Dashboard <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" href="#">{{ username }}</a>
+            <button class="btn btn-link btn-light justify-content-end " type="button" id="logout_button">Logout</button>
+            {% else %}
+                <a class="nav-item nav-link active text-white" href="/ui/homepage/">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link text-white" href="#">Features</a>
+                <a class="nav-item nav-link text-white" href="#">Team</a>
+                <a class="nav-item nav-link text-white" href="#">Pricing</a>
+                <a class="nav-item nav-link text-white" href="#">Services</a>
+                <a class="nav-item nav-link text-white" href="#">Contact</a>
+        </div>
+            {% endif %}
+    </div>
+    {% if login_successful is None %}
+    <div class="nav justify-content-end float-right">
+        <button class="btn btn-link btn-light mr-1" type="button" id="login_button">Login</button>
+        <button class="btn btn-link btn-light ml-2" type="button" id="register_button">Register</button>
+    </div>
+    {% endif %}
+</nav>

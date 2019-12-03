@@ -46,7 +46,7 @@ class SMSView(APIView):
         while queryset:
             return Response(
                 data={
-                    queryset.values()
+                    'result_objects': queryset.values()
                     },
                 status=status.HTTP_200_OK,
                 content_type="application/json"
@@ -54,7 +54,7 @@ class SMSView(APIView):
         else:
             return Response(
                 data={
-                    "no sms has been sent"
+                    'result_objects': "no sms has been sent"
                 },
                 status=status.HTTP_404_NOT_FOUND,
                 content_type="application/json"
