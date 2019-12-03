@@ -1,7 +1,7 @@
-window.onload = updateData;
+window.onload = getData;
 
 function updateData() {
-    var timeout = 5000;
+    var timeout = 10000;
     getData();
     setTimeout(updateData, timeout);
 }
@@ -15,8 +15,13 @@ function getData(){
             csrfmiddlewaretoken: $('#ajaxCsrfToken').val()
         },
         function(data){
-            // alert("got a response: " + data.total_msgs + "\nStatus: " + status)
-            $("#ajaxTotalSent").text(data.total_msgs);
+            if (data.total_msgs != 0 || data.total_msgs != null) {
+                // alert("got a response: " + data.total_msgs + "\nStatus: " + status)
+                $("#ajaxTotalSent").text(data.total_msgs);
+            }
+            if(data.last5_sent !=0 || data.last5_sent != null) {
+                $("#ajaxLast5minSent").text(data.last5_sent)
+            }
         },
         "json");
     var today = new Date();

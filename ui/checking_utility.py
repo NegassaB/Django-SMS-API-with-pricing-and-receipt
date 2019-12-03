@@ -1,8 +1,12 @@
 import requests as request_library
 from rest_framework.authtoken.models import Token
-from commons.models import SMSUser
+from commons.models import SMSUser, SMSMessages
 
 import json
+# used for determining the current time zone aware datetime instance
+from datetime import datetime, timezone, timedelta
+# used for parsing the datetime object from the json response recieved from sms messages
+from dateutil.parser import parse
 
 base_url = "http://localhost:8055/"
 
@@ -110,9 +114,40 @@ def get_total_msgs(user_token):
         # it counts the number of unique ids' are in the response meaning
         # there amount of text message sent.
         counter = 0
+        time_to_evaluate = datetime.now(timezone.utc)
+        last5_sent_counter = 0
         json_data = json.loads(get_msgs.text)
         for result in json_data['result_objects']:
             if result['id']:
                 counter += 1
+            if calculate_the_last_5minutes_sent(parse(result['sent_date'])):
+                last5_sent_counter += 1
         
-        return counter
+        return counter, last5_sent_counter
+
+
+"""
+This function is responsible for calculating the total number of text messages sent
+during the last 5 minutes.
+Until something better comes to my mind I'm calling the SMSMessages model right here
+and getting the results. When something better has come to mind I'll modify it.
+What it does is, it gets the current time from the server and calculates the last five minutes
+from that. Then it will use that to filter all the objects created from SMSMessages with the
+query of attribute sent_date less than the last five minutes. It then check if the queryset is not
+empty and checks if it has the necessary data, if it does it return a boolean value of True, else
+it returns a boolean value False.
+"""
+def calculate_the_last_5minutes_sent(sent_date):
+    current_time = datetime.now(timezone.utc)
+    minutes5_before = current_time - timedelta(minutes=5)
+    queryset = SMSMessages.objects.filter(sent_date__gte=minutes5_before)
+    if queryset:
+        print("got here")
+        for data in queryset:
+            return True
+        else:
+            return False
+
+    # if sent_date.minute <= 
+    # if current_time.minute is sent_date.minute:
+    #     print("got it")
