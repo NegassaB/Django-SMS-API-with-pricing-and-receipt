@@ -1,4 +1,12 @@
 import requests as request_library
+from rest_framework.authtoken.models import Token
+from commons.models import SMSUser, SMSMessages
+
+import json
+# used for determining the current time zone aware datetime instance
+from datetime import datetime, timezone, timedelta
+# used for parsing the datetime object from the json response recieved from sms messages
+from dateutil.parser import parse
 
 base_url = "http://localhost:8055/"
 
@@ -51,6 +59,7 @@ def check_username(username):
     It will send a get request to the api endpoint and parse it's response accordingly. It
     then checks if the username provided is in the response object and if it is returns a True
     value. If it's not it returns a False value.
+    It will also return the user_token for that username so as it can be used in the dashboard.
     """
     username_to_check = username
     try:
@@ -66,6 +75,79 @@ def check_username(username):
             return False
     else:
         if username_to_check in check_username_for_existence.text:
+            return True, get_user_token(username_to_check)
+        else:
+            return False
+
+
+def get_user_token(username):
+    """
+    This function is responsible for getting the user token from the database
+    by searching using the username. The way it's works is, it searches for
+    that user in the SMSUser model first and uses that object to search for
+    the token key from the Token model. There might be a better way of doing
+    this than the way I did it below but since time is running out I have to do
+    it this way and then try to improve it in the future.
+    """
+    return Token.objects.get(user=SMSUser.objects.get(username=username))
+
+
+def get_total_msgs(user_token):
+    """
+    This function is called by  the ajax_dashboard_update function from the views module.
+    It sums up all the sms text messages sent by the user identified by the user_token.
+    """
+    try:
+        get_msgs = request_library.get(
+            base_url + "notification/sendsms/",
+            headers=
+            {
+                'content-type': "application/x-www-form-urlencoded",
+                'authorization': "token " + user_token
+            },
+            timeout=(3, 6)
+        )
+    except Exception as e:
+        with open('get_user_sent_messages_tries.txt', 'a') as gusm_object:
+            gusm_object.write(str(e) + "\n\n")
+    else:
+        # it counts the number of unique ids' are in the response meaning
+        # there amount of text message sent.
+        counter = 0
+        time_to_evaluate = datetime.now(timezone.utc)
+        last5_sent_counter = 0
+        json_data = json.loads(get_msgs.text)
+        for result in json_data['result_objects']:
+            if result['id']:
+                counter += 1
+            if calculate_the_last_5minutes_sent(parse(result['sent_date'])):
+                last5_sent_counter += 1
+        
+        return counter, last5_sent_counter
+
+
+"""
+This function is responsible for calculating the total number of text messages sent
+during the last 5 minutes.
+Until something better comes to my mind I'm calling the SMSMessages model right here
+and getting the results. When something better has come to mind I'll modify it.
+What it does is, it gets the current time from the server and calculates the last five minutes
+from that. Then it will use that to filter all the objects created from SMSMessages with the
+query of attribute sent_date less than the last five minutes. It then check if the queryset is not
+empty and checks if it has the necessary data, if it does it return a boolean value of True, else
+it returns a boolean value False.
+"""
+def calculate_the_last_5minutes_sent(sent_date):
+    current_time = datetime.now(timezone.utc)
+    minutes5_before = current_time - timedelta(minutes=5)
+    queryset = SMSMessages.objects.filter(sent_date__gte=minutes5_before)
+    if queryset:
+        print("got here")
+        for data in queryset:
             return True
         else:
             return False
+
+    # if sent_date.minute <= 
+    # if current_time.minute is sent_date.minute:
+    #     print("got it")

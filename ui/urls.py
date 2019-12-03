@@ -24,4 +24,5 @@ urlpatterns = [
     path('dashboard/<username>/', views.dashboard, name="dashboard"),
     path('logout/', views.logout_request, name="logout"),
     path('register/', views.register_request, name="register"),
+    path('ajax/dashboard_update/', views.ajax_dashboard_update, name="ajax_dashboard_update"),
 ]

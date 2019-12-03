@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect
 import requests as request_library
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
-from .checking_utility import check_username_for_registration, check_username
+from .checking_utility import check_username_for_registration, check_username, get_total_msgs
 
 # Create your views here.
 
@@ -53,7 +53,7 @@ def login_request(request):
             if login_response is not None:
                 user_token = login_response.text
                 messages.success(request, f"You are now logged in as {payload['username']}", fail_silently=True)
-                messages.info(request, f"{user_token}")
+                # messages.info(request, f"{user_token}")
                 return redirect('ui:dashboard', username=payload['username'])
             else:
                 messages.error(request, "Incorrect username or password")
@@ -94,18 +94,39 @@ def dashboard(request, username):
     If it's redirected from the login, it will get the username and the login status from the request
     and pass that to the dashboard.html template.
     """
-    if username and check_username(username):
+    check_username_flag, username_user_token = check_username(username)
+    if username and check_username_flag:
         return render(
             request=request,
             template_name="ui/dashboard.html",
             context={
                 "login_successful": True,
-                "username": username
+                "username": username,
+                "user_token": username_user_token
             })
     else:
         messages.error(request, "username doesn't exist")
         # return render(request=request, template_name="ui/all404.html", context={"error":"username doesn't exist"})
         return redirect('ui:login')
+
+
+def ajax_dashboard_update(request):
+    """
+    This function is used to generate the view for the ajax requests that will come from the ui.
+    It will get the user token from the ajax request and then gets all the text messages sent by
+    that user & the messages sent by that user during the last 5 minutes from the get_total_msgs()
+    function declared in checking_utility. It will also calculate how much has been sent in the last 5 minutes.
+    """
+    if request.is_ajax():
+        # the username of the user that has sent the texts
+        ajax_user_token = request.POST.get('ajaxUserToken')
+        total_msgs, last5_sent = get_total_msgs(ajax_user_token)
+        return JsonResponse(
+            {
+                'total_msgs': total_msgs,
+                'last5_sent': last5_sent
+            }
+        )
 
 
 def register_request(request):
