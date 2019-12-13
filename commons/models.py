@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from rest_framework.authtoken.models import Token
 
+from django.core.validators import RegexValidator
+
 # Create your models here.
 
 
@@ -13,6 +15,10 @@ class SMSUser(AbstractUser):
     company_name = models.CharField(max_length=150)
     # make the value 1 in the db an unset value and the rest the actual values
     sms_price = models.ForeignKey("SMSPrice", related_name="sms_prices", on_delete=models.PROTECT, default=1)
+    # since an Integer field will not let us use 0 and have a max_length, the validator below will
+    # kick in and make sure only number's are put in here.
+    company_tin = models.CharField(max_length=10, default=1, validators=[RegexValidator(r'^\d{1, 10}$')])
+    company_status = models.BooleanField(default=True)
 
     class Meta:
         verbose_name_plural = "SMSUsers"
@@ -61,3 +67,21 @@ class SMSMessages(models.Model):
 
     def __str__(self):
         return str(self.sending_user)
+
+
+"""
+A class to track the invoices generated. It has all the necessary infos. But perhaps, I might
+need to add the actual file generated here. Time will tell.
+"""
+class Invoice(models.Model):
+    invoice_number = models.CharField(max_length=10, default=1, validators=[RegexValidator(r'^\d{1, 10}$')], primary_key=True)
+    invoice_to = models.ForeignKey("SMSUser", related_name="invoiced_user", on_delete=models.PROTECT, related_query_name="invoiced_user")
+    payment_status = models.BooleanField(default=False)
+
+
+    class Meta:
+        verbose_name_plural = "Invoices"
+    
+
+    def __str__(self):
+        return str(self.invoice_number)
