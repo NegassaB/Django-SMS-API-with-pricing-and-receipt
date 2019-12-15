@@ -10,7 +10,7 @@ don't know how to do it yet, but it should:
 5. display in what time it should be paid (one week)
 6. save to user account under invoices section as file and pdf
 """
-"""
+
 def generate_invoice(request, username, template_name):
     invoice = Invoice(username)
     user_to_invoice = SMSUser.objects.get(username)
@@ -46,4 +46,3 @@ def generate_invoice(request, username, template_name):
         )
 
         # TODO return a pdf render of the template_name with all the necessary data inserted
-"""

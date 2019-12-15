@@ -185,38 +185,6 @@ def invoice_generator(request, username):
     This function is responsible for generating and returning the invoice for each requesting
     company as a pdf.
     """
-    # ret_val = generate_invoice(request, username, template_name="ui/invoice.html")
-    # return render(request, ret_val)
+    ret_val = generate_invoice(request, username, template_name="ui/invoice.html")
+    return render(request, ret_val)
     # return render(request, template_name="ui/invoice.html", context={})
-    invoice = commons.models.Invoice(username)
-    user_to_invoice = commons.models.SMSUser.objects.get(username)
-    # TODO you have to figure out how to get the company name of each users on the SMSMessages table
-    # all_sms_sent = SMSMessages.objects.all().filter()
-
-    company_to_invoice = user_to_invoice.company_name
-    company_tin = user_to_invoice.company_tin
-    invoice_number = invoice.invoice_number
-    account = company_to_invoice.pk
-    user_email = user_to_invoice.emali
-    paid_status = invoice.payment_status
-    all_users_in_company = commons.models.SMSUser.objects.all().filter(company_name="company_to_invoice")
-
-
-    ret_val = render(
-        request,
-        template_name=template_name,
-        context={
-            "username": user_to_invoice,
-            "company_name": company_to_invoice,
-            "account": account,
-            "Invoice_number": invoice_number,
-            "tin": company_tin,
-            "email": user_email,
-            "bill_month": "not yet defined",
-            "due_date": "not yet defined",
-            "users_that_sent_sms": {[un for un in all_users_in_company.username]},
-            "VAT": "not yet defined",
-            "Total": "not yet defined",
-            "payment_status": paid_status,
-        }
-        )
