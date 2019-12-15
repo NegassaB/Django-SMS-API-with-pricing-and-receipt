@@ -10,7 +10,14 @@
             {% if login_successful %}
         <div class="navbar-nav navbarColor02">
             <a class="nav-item nav-link active" href="/ui/dashboard/{{username}}/">Dashboard <span class="sr-only">(current)</span></a>
-            <a class="nav-item nav-link" href="#">{{ username }}</a>
+            <div class="dropdown">
+                <a class="nav-item btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ username }}</a>
+
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" href="/ui/{{username}}/invoice">Invoice</a>
+                    <a class="dropdown-item" href="/ui/{{username}}/settings">Settings</a>
+                </div>
+            </div>
             <button class="btn btn-link btn-light justify-content-end " type="button" id="logout_button">Logout</button>
             {% else %}
                 <a class="nav-item nav-link active text-white" href="/ui/homepage/">Home <span class="sr-only">(current)</span></a>

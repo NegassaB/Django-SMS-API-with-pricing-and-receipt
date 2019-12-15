@@ -10,8 +10,8 @@ from rest_framework import generics
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.contrib.auth import authenticate, logout
 
-from commons.models import SMSUser, SMSPrice, Type, SMSMessages
-from commons.serializers import SMSUserSerializer, SMSPriceSerializer, TypeSerializer, SMSMessagesSerializer
+from commons.models import SMSUser, SMSPrice, Type
+from commons.serializers import SMSUserSerializer, SMSPriceSerializer, TypeSerializer
 
 
 class SMSUserViewSet(viewsets.ModelViewSet):

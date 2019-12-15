@@ -10,6 +10,7 @@ don't know how to do it yet, but it should:
 5. display in what time it should be paid (one week)
 6. save to user account under invoices section as file and pdf
 """
+"""
 def generate_invoice(request, username, template_name):
     invoice = Invoice(username)
     user_to_invoice = SMSUser.objects.get(username)
@@ -37,7 +38,7 @@ def generate_invoice(request, username, template_name):
             "email": user_email,
             "bill_month": "not yet defined",
             "due_date": "not yet defined",
-            "users_that_sent_sms": "not yet defined",
+            "users_that_sent_sms": {[un for un in all_users_in_company.username]},
             "VAT": "not yet defined",
             "Total": "not yet defined",
             "payment_status": paid_status,
@@ -45,3 +46,4 @@ def generate_invoice(request, username, template_name):
         )
 
         # TODO return a pdf render of the template_name with all the necessary data inserted
+"""

@@ -18,6 +18,7 @@ class SMSUser(AbstractUser):
     # since an Integer field will not let us use 0 and have a max_length, the validator below will
     # kick in and make sure only number's are put in here.
     company_tin = models.CharField(max_length=10, default=1, validators=[RegexValidator(r'^\d{1, 10}$')])
+    # TODO right before production, change this to False as to not fuck yourself
     company_status = models.BooleanField(default=True)
 
     class Meta:

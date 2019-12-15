@@ -13,7 +13,7 @@ class SMSUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = SMSUser
-    list_display = ('username', 'email', 'company_name', 'company_tin')
+    list_display = ('username', 'email', 'company_name', 'company_tin', 'company_status')
 
 
 class SMSMessagesAdmin(admin.ModelAdmin):
