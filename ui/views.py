@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse, JsonResponse
 
 from .ui_utilities import check_username_for_registration, check_username, get_total_msgs
-# from .invoice_generator import generate_invoice
+from .invoice_generator import generate_invoice
 
 # Create your views here.
 

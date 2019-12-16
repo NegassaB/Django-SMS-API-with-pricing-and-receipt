@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from commons.models import Invoice, SMSUser, SMSMessages
+from commons.models import SMSUser, SMSMessages, Invoice
+from commons.serializers import InvoiceSerialzer
 
 """
 don't know how to do it yet, but it should:
@@ -12,18 +13,51 @@ don't know how to do it yet, but it should:
 """
 
 def generate_invoice(request, username, template_name):
-    invoice = Invoice(username)
-    user_to_invoice = SMSUser.objects.get(username)
+    # invoice_serializer = InvoiceSerialzer(data={"invoice_to": username})
+    # if invoice_serializer.is_valid():
+    #     invoice_number = invoice_serializer.validated_data["invoice_number"]
+    #     invoice_object = invoice_serializer.save()
+    #     user_to_invoice = invoice_serializer.validated_data["invoice_to"]
+    #     company_to_invoice = user_to_invoice.company_name
+    #     company_tin = user_to_invoice.company_tin
+    #     user_account = user_to_invoice.pk
+    #     paid_status = invoice_serializer.validated_data["payment_status"]
+    #     all_users_in_company = SMSUser.objects.filter(company_name=company_to_invoice)
+
+    #     ret_val = render(
+    #         request,
+    #         template_name=template_name,
+    #         context={
+    #             "username": user_to_invoice,
+    #             "company_name": company_to_invoice,
+    #             "account": account,
+    #             "Invoice_number": invoice_number,
+    #             "tin": company_tin,
+    #             "email": user_email,
+    #             "bill_month": "not yet defined",
+    #             "due_date": "not yet defined",
+    #             "users_that_sent_sms": {[un for un in all_users_in_company.username]},
+    #             "VAT": "not yet defined",
+    #             "Total": "not yet defined",
+    #             "payment_status": paid_status,
+    #         }
+    #     )
+    
+
+    user_to_invoice = SMSUser.objects.get(username=username)
+    user_invoice = Invoice(invoice_to=user_to_invoice)
+    # user_invoice = Invoice(data)
     # TODO you have to figure out how to get the company name of each users on the SMSMessages table
     # all_sms_sent = SMSMessages.objects.all().filter()
 
     company_to_invoice = user_to_invoice.company_name
     company_tin = user_to_invoice.company_tin
-    invoice_number = invoice.invoice_number
-    account = company_to_invoice.pk
-    user_email = user_to_invoice.emali
-    paid_status = invoice.payment_status
+    account = user_to_invoice.pk
+    user_email = user_to_invoice.email
     all_users_in_company = SMSUser.objects.all().filter(company_name="company_to_invoice")
+    user_invoice.save()
+    invoice_number = user_invoice.pk
+    paid_status = user_invoice.payment_status
 
 
     ret_val = render(
@@ -38,7 +72,7 @@ def generate_invoice(request, username, template_name):
             "email": user_email,
             "bill_month": "not yet defined",
             "due_date": "not yet defined",
-            "users_that_sent_sms": {[un for un in all_users_in_company.username]},
+            "users_that_sent_sms": [un for un in all_users_in_company],
             "VAT": "not yet defined",
             "Total": "not yet defined",
             "payment_status": paid_status,

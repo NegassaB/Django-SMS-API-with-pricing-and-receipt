@@ -76,7 +76,6 @@ need to add the actual file generated here. Time will tell.
 """
 class Invoice(models.Model):
     # invoice_number = models.CharField(max_length=10, default=1, validators=[RegexValidator(r'^\d{1, 10}$')], primary_key=True)
-    invoice_number = models.AutoField(max_length=10, primary_key=True)
     invoice_to = models.ForeignKey("SMSUser", related_name="invoiced_user", on_delete=models.PROTECT, related_query_name="invoiced_user")
     payment_status = models.BooleanField(default=False)
 
@@ -86,4 +85,4 @@ class Invoice(models.Model):
     
 
     def __str__(self):
-        return str(self.invoice_number)
+        return str(self.invoice_to) + str(self.payment_status)

@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 from django.contrib.auth import authenticate, logout
 
 from commons.models import SMSUser, SMSPrice, Type
-from commons.serializers import SMSUserSerializer, SMSPriceSerializer, TypeSerializer
+from commons.serializers import SMSUserSerializer, SMSPriceSerializer, TypeSerializer, InvoiceSerialzer
 
 
 class SMSUserViewSet(viewsets.ModelViewSet):
@@ -198,3 +198,18 @@ class LogoutView(APIView):
             )
         else:
             return Response({"message": "logout didn't work"})
+
+
+class InvoiceCreate(generics.CreateAPIView):
+    """
+    This class is reponsible for generatng a view for the Invoice instance creation, aka invoice generation.
+    It sub-classes the CreateAPIView class from the generics module.
+    """
+    serializer_class = InvoiceSerialzer
+
+
+class InvoiceView(generics.ListAPIView):
+    """
+    This class is responsible for creating a view for the Invoice model, aka display all the invoice objects created.
+    """
+    serializer_class = InvoiceSerialzer
