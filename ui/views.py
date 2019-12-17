@@ -5,7 +5,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse, JsonResponse
 
 from .ui_utilities import check_username_for_registration, check_username, get_total_msgs
-from .invoice_generator import generate_invoice
+from commons.models import SMSMessages, SMSUser, Invoice
+# from .invoice_generator import generate_invoice
 
 # Create your views here.
 
@@ -185,6 +186,43 @@ def invoice_generator(request, username):
     This function is responsible for generating and returning the invoice for each requesting
     company as a pdf.
     """
-    ret_val = generate_invoice(request, username, template_name="ui/invoice.html")
-    return render(request, ret_val)
+    # ret_val = generate_invoice(request, username, template_name="ui/invoice.html")
+    # return render(request, ret_val)
     # return render(request, template_name="ui/invoice.html", context={})
+
+    user_to_invoice = SMSUser.objects.get(username=username)
+    user_invoice = Invoice(invoice_to=user_to_invoice)
+    # user_invoice = Invoice(data)
+    # TODO you have to figure out how to get the company name of each users on the SMSMessages table
+    # all_sms_sent = SMSMessages.objects.all().filter()
+
+    company_to_invoice = user_to_invoice.company_name
+    company_tin = user_to_invoice.company_tin
+    account = user_to_invoice.pk
+    user_email = user_to_invoice.email
+    all_users_in_company = SMSUser.objects.all().filter(company_name="company_to_invoice")
+    user_invoice.save()
+    invoice_number = user_invoice.pk
+    paid_status = user_invoice.payment_status
+
+
+    ret_val = render(
+        request,
+        template_name='ui/invoice.html',
+        context={
+            "username": user_to_invoice,
+            "company_name": company_to_invoice,
+            "account": account,
+            "Invoice_number": invoice_number,
+            "tin": company_tin,
+            "email": user_email,
+            "bill_month": "not yet defined",
+            "due_date": "not yet defined",
+            "users_that_sent_sms": [un for un in all_users_in_company],
+            "VAT": "not yet defined",
+            "Total": "not yet defined",
+            "payment_status": paid_status,
+        }
+        )
+    
+    return ret_val

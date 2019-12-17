@@ -85,4 +85,4 @@ class Invoice(models.Model):
     
 
     def __str__(self):
-        return str(self.invoice_to) + str(self.payment_status)
+        return str(self.invoice_to) + "_" + str(self.pk)
