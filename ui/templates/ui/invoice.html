@@ -21,22 +21,21 @@
             <br>
             <div class="row">
                 <div class="col-md-6">
-                    <h4 class="font-weight-light self-center h4"><p>Customer Name: <span class="font-weight-lighter"> placeholder</span></p></h4>
-                    <h4 class="font-weight-light self-center h4"><p>Invoice Number: <span class="font-weight-lighter"> placeholder</span> </p></h4>
-                    <h4 class="font-weight-light self-center h4"><p>Account: <span class="font-weight-lighter"> placeholder</span></p></h4>
-                    <h4 class="font-weight-light self-center h4"><p>T.I.N: <span class="font-weight-lighter"> placeholder</span></p></h4>
+                    <h4 class="font-weight-light self-center h4"><p>Customer Name: <span class="font-weight-lighter"> {{username.company_name}}</span></p></h4>
+                    <h4 class="font-weight-light self-center h4"><p>Account: <span class="font-weight-lighter"> {{account}}</span></p></h4>
+                    <h4 class="font-weight-light self-center h4"><p>T.I.N: <span class="font-weight-lighter"> {{tin}}</span></p></h4>
                 </div>
                 <div class="col-md-6">
-                        <h4 class="font-weight-light self-center h4"><p>Invoice number: <span class="font-weight-lighter"> placeholder</span></p></h4>
-                    <h4 class="font-weight-light self-center h4"><p>Email: <span class="font-weight-lighter"> placeholder</span></p></h4>
-                    <h4 class="font-weight-light self-center h4"><p>Bill Month: <span class="font-weight-lighter"> placeholder</span></p></h4>
-                    <h4 class="font-weight-light self-center h4"><p>Due date: <span class="font-weight-lighter"> placeholder</span></p></h4>
+                    <h4 class="font-weight-light self-center h4"><p>Invoice number: <span class="font-weight-lighter"> {{invoice_number}}</span></p></h4>
+                    <h4 class="font-weight-light self-center h4"><p>Email: <span class="font-weight-lighter"> {{email}}</span></p></h4>
+                    <h4 class="font-weight-light self-center h4"><p>Bill Month: <span class="font-weight-lighter"> {{bill_month}}</span></p></h4>
+                    <h4 class="font-weight-light self-center h4"><p>Due date: <span class="font-weight-lighter"> {{due_date}}</span></p></h4>
                 </div>
             </div>
         </header>
     </div>
     <hr class="bg-primary">
-    <h6 class="font-weight-lighter self-center h6"><p>Paid status: placeholder</p></h6>
+    <h6 class="font-weight-lighter self-center h6"><p>Paid status: {{payment_status}}</p></h6>
     <hr class="bg-primary">
     
     <div class="container-fluid">
@@ -46,15 +45,15 @@
                 <div class="row">
                     <div class="col-md-6">
                         <h4 class="font-weight-lighter h4">username</h4>
-                        <p>placeholder placeholder</p>
-                        <p>placeholder placeholder</p>
-                        <p>placeholder placeholder</p>
+                        {% for user in all_users_that_sent_sms %}
+                        <p>{{user.username}}</p>
+                        {% endfor %}
                     </div>
                     <div class="col-md-6">
                         <h4 class="font-weight-lighter h4">Company</h4>
-                        <p>placeholder placeholder</p>
-                        <p>placeholder placeholder</p>
-                        <p>placeholder placeholder</p>
+                        {% for user in all_users_that_sent_sms %}
+                        <p>{{user.company_name}}</p>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -62,10 +61,10 @@
                 <br>
                 <div class="row">
                     <div class="col-md-6">
-                        <h4 class="font-weight-light self-center h4">Total sms sent this month:</h4>
+                        <h4 class="font-weight-light self-center h4">Total sms sent in the month:</h4>
                     </div>
                     <div class="col-md-6">
-                        <p>placeholder placeholder</p>
+                        <p>{{total_price}}</p>
                     </div>
                 </div>
                 <br>
@@ -83,7 +82,7 @@
                         <h4 class="font-weight-light self-center h4">V.A.T:</h4>
                     </div>
                     <div class="col-md-6">
-                        <p>placeholder placeholder</p>
+                        <p>{{vat}}</p>
                     </div>
                     <br>
                 </div>
@@ -93,7 +92,7 @@
                         <h4 class="font-weight-light self-center h4">Total:</h4>
                     </div>
                     <div class="col-md-6">
-                        <p>placeholder placeholder</p>
+                        <p>{{total_price}}</p>
                     </div>
                 </div>
             </div>
