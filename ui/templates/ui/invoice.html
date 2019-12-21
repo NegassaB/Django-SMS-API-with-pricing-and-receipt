@@ -29,7 +29,7 @@
                     <h4 class="font-weight-light self-center h4"><p>Invoice number: <span class="font-weight-lighter"> {{ invoice_number }}</span></p></h4>
                     <h4 class="font-weight-light self-center h4"><p>Email: <span class="font-weight-lighter"> {{ email }}</span></p></h4>
                     <h4 class="font-weight-light self-center h4"><p>Bill Month: <span class="font-weight-lighter"> {{ bill_month }}</span></p></h4>
-                    <h4 class="font-weight-light self-center h4"><p>Due date: <span class="font-weight-lighter"> {{ due_date }}</span></p></h4>
+                    <h4 class="font-weight-light self-center h4"><p>Due date: <span class="font-weight-lighter"> 5 days from this invoice</span></p></h4>
                 </div>
             </div>
         </header>
@@ -44,22 +44,20 @@
                 <label class="font-weight-light self-center h2">All users that sent sms:</label>
                 <div class="row">
                     <div class="col-md-4">
-                        <h4 class="font-weight-lighter h4">username</h4>
-                        {% for user in all_users_that_sent_sms %}
-                        <p>{{ user.username }}</p>
-                        {% endfor %}
+                            {% for key, value in all_sms_sent.items %}
+                            <h4 class="font-weight-lighter h4">username</h4>
+                            {% for v in value %}
+                            <p>{{ v.user }}</p>
                     </div>
                     <div class="col-md-4">
                         <h4 class="font-weight-lighter h4">Company</h4>
-                        {% for user in all_users_that_sent_sms %}
-                        <p>{{ user.company_name }}</p>
-                        {% endfor %}
+                        <p>{{ v.company_name }}</p>
                     </div>
                     <div class="col-md-4">
                         <h4 class="font-weight-lighter h4">Total sent</h4>
-                        {% for user in all_users_that_sent_sms %}
-                        <p>{{ user.total_sent }}</p>
-                        {% endfor %}
+                         <p>{{ v.total_sent_single_user }}</p>
+                         {% endfor %}
+                         {% endfor %}
                     </div>
                 </div>
             </div>
