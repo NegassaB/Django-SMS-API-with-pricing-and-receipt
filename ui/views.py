@@ -6,7 +6,7 @@ from django.http import HttpResponse, JsonResponse
 
 from .ui_utilities import check_username_for_registration, check_username, get_total_msgs
 from commons.models import SMSMessages, SMSUser, Invoice
-# from .invoice_generator import generate_invoice
+from .invoice_generator import generate_invoice
 
 # Create your views here.
 
@@ -186,45 +186,7 @@ def invoice_generator(request, username):
     This function is responsible for generating and returning the invoice for each requesting
     company as a pdf.
     """
-    # ret_val = generate_invoice(request, username, template_name="ui/invoice.html")
+    ret_val = generate_invoice(request, username, template_name="ui/invoice.html")
+    return ret_val
     # return render(request, ret_val)
     # return render(request, template_name="ui/invoice.html", context={})
-
-    user_to_invoice = SMSUser.objects.get(username=username)
-    user_invoice = Invoice(invoice_to=user_to_invoice)
-    # TODO you have to figure out how to get the company name of each users on the SMSMessages table
-    # all_sms_sent = SMSMessages.objects.all().filter()
-
-    company_to_invoice = user_to_invoice.company_name
-    company_tin = user_to_invoice.company_tin
-    account = user_to_invoice.pk
-    user_email = user_to_invoice.email
-    all_users_in_company = SMSUser.objects.filter(company_name=company_to_invoice)
-    user_invoice.save()
-    invoice_number = user_invoice.pk
-    paid_status = user_invoice.payment_status
-    all_sms_sent = {}
-    for user in all_users_in_company:
-        all_sms_sent[user] = SMSMessages.objects.filter(sending_user=user)
-    # x = count(all_sms_sent)
-
-    ret_val = render(
-        request,
-        template_name='ui/invoice.html',
-        context={
-            "username": user_to_invoice,
-            "company_name": company_to_invoice,
-            "account": account,
-            "invoice_number": invoice_number,
-            "tin": company_tin,
-            "email": user_email,
-            "bill_month": "not yet defined",
-            "due_date": "not yet defined",
-            "all_users_that_sent_sms": all_users_in_company,
-            "vat": "not yet defined",
-            "total_price": "not yet defined",
-            "payment_status": paid_status,
-        }
-        )
-    
-    return ret_val

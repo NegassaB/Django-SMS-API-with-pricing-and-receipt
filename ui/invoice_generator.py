@@ -13,71 +13,54 @@ don't know how to do it yet, but it should:
 """
 
 def generate_invoice(request, username, template_name):
-    pass
-    # invoice_serializer = InvoiceSerialzer(data={"invoice_to": username})
-    # if invoice_serializer.is_valid():
-    #     invoice_number = invoice_serializer.validated_data["invoice_number"]
-    #     invoice_object = invoice_serializer.save()
-    #     user_to_invoice = invoice_serializer.validated_data["invoice_to"]
-    #     company_to_invoice = user_to_invoice.company_name
-    #     company_tin = user_to_invoice.company_tin
-    #     user_account = user_to_invoice.pk
-    #     paid_status = invoice_serializer.validated_data["payment_status"]
-    #     all_users_in_company = SMSUser.objects.filter(company_name=company_to_invoice)
+    user_to_invoice = SMSUser.objects.get(username=username)
+    user_invoice = Invoice(invoice_to=user_to_invoice)
+    # TODO you have to figure out how to get the company name of each users on the SMSMessages table
+    # all_sms_sent = SMSMessages.objects.all().filter()
 
-    #     ret_val = render(
-    #         request,
-    #         template_name=template_name,
-    #         context={
-    #             "username": user_to_invoice,
-    #             "company_name": company_to_invoice,
-    #             "account": account,
-    #             "Invoice_number": invoice_number,
-    #             "tin": company_tin,
-    #             "email": user_email,
-    #             "bill_month": "not yet defined",
-    #             "due_date": "not yet defined",
-    #             "users_that_sent_sms": {[un for un in all_users_in_company.username]},
-    #             "VAT": "not yet defined",
-    #             "Total": "not yet defined",
-    #             "payment_status": paid_status,
-    #         }
-    #     )
+    company_to_invoice = user_to_invoice.company_name
+    company_tin = user_to_invoice.company_tin
+    account = user_to_invoice.pk
+    user_email = user_to_invoice.email
+    all_users_in_company = SMSUser.objects.filter(company_name=company_to_invoice)
+    user_invoice.save()
+    invoice_number = user_invoice.pk
+    paid_status = user_invoice.payment_status
+    #TODO use something else other than a dictionary that can hold the username, the company and the total sent by that user in the month
+    all_sms_sent = {}
+    for user in all_users_in_company:
+        #TODO add the month that needs to be billed to this filter parameter
+        #TODO you can get the month automatically by calling datetime.now.month()
+        # TODO you can run the code at the begining of each month by doing:
+        # TODO x = date.today() then x = x.replace(day=1) 
+        all_sms_sent[user] = SMSMessages.objects.filter(
+            sending_user=user,
+            delivery_status="True",
+            sent_date__year="2019",
+            sent_date__month = "10"
+            )
+    # total_amount_sent = all_sms_sent.count()
+
+    ret_val = render(
+        request,
+        template_name=template_name,
+        context={
+            "username": user_to_invoice,
+            "company_name": company_to_invoice,
+            "account": account,
+            "invoice_number": invoice_number,
+            "tin": company_tin,
+            "email": user_email,
+            "bill_month": "not yet defined",
+            "due_date": "not yet defined",
+            "all_users_that_sent_sms": all_users_in_company,
+            "total_amount_sent": "not yet defined",
+            "vat": "not yet defined",
+            "total_price": "not yet defined",
+            "payment_status": paid_status,
+        }
+        )
     
-
-    # user_to_invoice = SMSUser.objects.get(username=username)
-    # user_invoice = Invoice(invoice_to=user_to_invoice)
-    # # user_invoice = Invoice(data)
-    # # TODO you have to figure out how to get the company name of each users on the SMSMessages table
-    # # all_sms_sent = SMSMessages.objects.all().filter()
-
-    # company_to_invoice = user_to_invoice.company_name
-    # company_tin = user_to_invoice.company_tin
-    # account = user_to_invoice.pk
-    # user_email = user_to_invoice.email
-    # all_users_in_company = SMSUser.objects.all().filter(company_name="company_to_invoice")
-    # user_invoice.save()
-    # invoice_number = user_invoice.pk
-    # paid_status = user_invoice.payment_status
-
-
-    # ret_val = render(
-    #     request,
-    #     template_name=template_name,
-    #     context={
-    #         "username": user_to_invoice,
-    #         "company_name": company_to_invoice,
-    #         "account": account,
-    #         "Invoice_number": invoice_number,
-    #         "tin": company_tin,
-    #         "email": user_email,
-    #         "bill_month": "not yet defined",
-    #         "due_date": "not yet defined",
-    #         "users_that_sent_sms": [un for un in all_users_in_company],
-    #         "VAT": "not yet defined",
-    #         "Total": "not yet defined",
-    #         "payment_status": paid_status,
-    #     }
-    #     )
+    return ret_val
 
         # TODO return a pdf render of the template_name with all the necessary data inserted
