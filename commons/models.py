@@ -30,7 +30,7 @@ class SMSUser(AbstractUser):
 
 class SMSPrice(models.Model):
     # change to floatField
-    set_price = models.CharField(max_length=25)
+    set_price = models.FloatField(max_length=25)
     price_desc = models.CharField(max_length=100)
     # make the value 1 in the db an unset value and the rest the actual values
     type = models.ForeignKey("Type", related_name="types", on_delete=models.PROTECT, related_query_name="SMSPrices")

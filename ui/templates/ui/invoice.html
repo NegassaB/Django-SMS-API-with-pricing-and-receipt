@@ -44,25 +44,25 @@
                 <label class="font-weight-light self-center h2">All users that sent sms:</label>
                 <div class="row">
                     <div class="col-md-4">
-                            {% for key, value in all_sms_sent.items %}
-                            <h4 class="font-weight-lighter h4">username</h4>
-                            {% for v in value %}
-                            <p>{{ v.user }}</p>
+                        <!-- dict object all _sms_sent is garnered from the views and parsed accordingly as key & value of all_sms_sent.items -->
+                        {% for key, value in all_sms_sent.items %}
+                        <h4 class="font-weight-lighter h4">username</h4>
+                        {% for val in value %}
+                        <p>{{ val.user }}</p>
                     </div>
                     <div class="col-md-4">
                         <h4 class="font-weight-lighter h4">Company</h4>
-                        <p>{{ v.company_name }}</p>
+                        <p>{{ val.user.company_name }}</p>
                     </div>
                     <div class="col-md-4">
                         <h4 class="font-weight-lighter h4">Total sent</h4>
-                         <p>{{ v.total_sent_single_user }}</p>
+                         <p>{{ val.total_sent_single_user }}</p>
                          {% endfor %}
                          {% endfor %}
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <!-- <br> -->
                 <div class="row">
                     <div class="col-md-6">
                         <h4 class="font-weight-light self-center h4">Total sms sent in the month:</h4>
@@ -86,7 +86,7 @@
                         <h4 class="font-weight-light self-center h4">V.A.T:</h4>
                     </div>
                     <div class="col-md-6">
-                        <p>{{ vat }}</p>
+                        <p>{{ vat }} Birr</p>
                     </div>
                     <br>
                 </div>
@@ -96,7 +96,7 @@
                         <h4 class="font-weight-light self-center h4">Total:</h4>
                     </div>
                     <div class="col-md-6">
-                        <p>{{ total_price }}</p>
+                        <p>{{ total_price }} Birr</p>
                     </div>
                 </div>
             </div>

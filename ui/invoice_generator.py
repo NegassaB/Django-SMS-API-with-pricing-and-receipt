@@ -18,7 +18,6 @@ def generate_invoice(request, username, template_name):
     user_to_invoice = SMSUser.objects.get(username=username)
     user_invoice = Invoice(invoice_to=user_to_invoice)
     # TODO you have to figure out how to get the company name of each users on the SMSMessages table
-    # all_sms_sent = SMSMessages.objects.all().filter()
 
     company_to_invoice = user_to_invoice.company_name
     company_tin = user_to_invoice.company_tin
@@ -28,24 +27,30 @@ def generate_invoice(request, username, template_name):
     user_invoice.save()
     invoice_number = user_invoice.pk
     paid_status = user_invoice.payment_status
-    #TODO use something else other than a dictionary that can hold the username, the company and the total sent by that user in the month
+
+    # All the sms sent by each users is retrieved from the database and put into
+    # the all_sms_sent_by_user dictionary object with a name of "all_sms_sent"
+    # that contains a list of dictionary objects that contain the user that sent the smses,
+    # the total_sent_smses. The company_name of the user can be derived from the user
+    # attribute.
+
     all_sms_sent_by_users = {}
+
     for user in all_users_in_company:
-        #TODO you can get the month automatically by calling datetime.now.month()
         # TODO you can run the code at the begining of each month by doing:
         # TODO x = date.today() then x = x.replace(day=1) 
         total_sent_by_single_user = SMSMessages.objects.filter(
             sending_user=user,
             delivery_status="True",
             sent_date__year=datetime.now().year,
-            sent_date__month = datetime.now().month - 2
+            sent_date__month = 10
+            # sent_date__month = datetime.now().month - 2
             )
         all_sms_sent_by_users = {
             "all_sms_sent": [
                 {
                 "user": user,
-                "total_sent_single_user": total_sent_by_single_user.count(),
-                "company_name": company_to_invoice
+                "total_sent_single_user": total_sent_by_single_user.count()
                 }
             ]
         }
@@ -56,6 +61,7 @@ def generate_invoice(request, username, template_name):
         sending_user__company_name=company_to_invoice
     )
     
+    # TODO feed the below object to a pdf renderer and return that pdf rendered object
     ret_val = render(
         request,
         template_name=template_name,
@@ -76,5 +82,3 @@ def generate_invoice(request, username, template_name):
         )
     
     return ret_val
-
-        # TODO return a pdf render of the template_name with all the necessary data inserted
