@@ -7,6 +7,7 @@ from django.conf import settings
 from django.http import HttpResponse
 
 from weasyprint import HTML, CSS
+from weasyprint.fonts import FontConfiguration
 import tempfile
 
 from datetime import datetime, date
@@ -89,14 +90,21 @@ def generate_invoice(request, username, template_name):
         request
     ).encode(encoding='UTF-8')
     
+    font_config = FontConfiguration()
     pdf_file = HTML(string=rendered_html, base_url=request.build_absolute_uri())
     pdf_file.render()
     pdf_container = pdf_file.write_pdf(
         stylesheets=[
-            CSS(
-                'ui/' + settings.STATIC_URL + 'ui/css/bootstrap.min.css'
+            CSS(string='@page {size: A4; margin: 0.25cm;}'
+                'ui' + settings.STATIC_URL + 'ui/css/bootstrap.min.css',
+                _check_mime_type=True,
+                font_config=font_config,
+                encoding='UTF-8',
+                media_type='screen'
             )
-        ]
+        ],
+        presentational_hints=True,
+        font_config=font_config,
     )
     response = HttpResponse(content_type='application/pdf;')
     response['Content-Disposition'] = 'filename=Invoice ' + company_to_invoice + str(datetime.now().month) + '.pdf'
