@@ -3,6 +3,7 @@ import requests as request_library
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse, JsonResponse
+from django.contrib.auth.decorators import login_required
 
 from .ui_utilities import check_username_for_registration, check_username, get_total_msgs
 from commons.models import SMSMessages, SMSUser, Invoice
@@ -96,6 +97,7 @@ def dashboard(request, username):
     If it's redirected from the login, it will get the username and the login status from the request
     and pass that to the dashboard.html template.
     """
+    user = request.user
     check_username_flag, username_user_token = check_username(username)
     if username and check_username_flag:
         return render(
@@ -182,9 +184,10 @@ def register_request(request):
 
 
 def invoice_generator(request, username):
+    # TODO this might need to change to a webpage that displays all the invoices for a user
     """
-    This function is responsible for generating and returning the invoice for each requesting
-    company as a pdf.
+    This function is responsible for generating and returning the invoice for each company
+    as a pdf.
     """
     ret_val = generate_invoice(request, username, template_name="ui/invoice.html")
     return ret_val

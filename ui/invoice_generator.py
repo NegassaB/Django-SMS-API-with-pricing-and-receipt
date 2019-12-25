@@ -2,6 +2,13 @@ from django.shortcuts import render
 from commons.models import SMSUser, SMSMessages, Invoice
 from commons.serializers import InvoiceSerialzer
 
+from django.template.loader import get_template
+from django.conf import settings
+from django.http import HttpResponse
+
+from weasyprint import HTML, CSS
+import tempfile
+
 from datetime import datetime, date
 
 """
@@ -62,23 +69,44 @@ def generate_invoice(request, username, template_name):
     )
     
     # TODO feed the below object to a pdf renderer and return that pdf rendered object
-    ret_val = render(
-        request,
-        template_name=template_name,
-        context={
-            "username": user_to_invoice,
-            "company_name": company_to_invoice,
-            "account": account,
-            "invoice_number": invoice_number,
-            "tin": company_tin,
-            "email": user_email,
-            "bill_month": datetime.now().month - 1,
-            "all_sms_sent": all_sms_sent_by_users,
-            "total_amount_sent": total_amount_sent.count(),
-            "vat": total_amount_sent.count() * 0.70 * 0.15,
-            "total_price": total_amount_sent.count() * 0.70 * 1.15, 
-            "payment_status": paid_status,
-        }
-        )
+    context_object =  {
+        "username": user_to_invoice,
+        "company_name": company_to_invoice,
+        "account": account,
+        "invoice_number": invoice_number,
+        "tin": company_tin,
+        "email": user_email,
+        "bill_month": datetime.now().month - 1,
+        "all_sms_sent": all_sms_sent_by_users,
+        "total_amount_sent": total_amount_sent.count(),
+        "vat": total_amount_sent.count() * 0.70 * 0.15,
+        "total_price": total_amount_sent.count() * 0.70 * 1.15, 
+        "payment_status": paid_status
+    }
+    # html_to_render = render(request=request, template_name='ui/invoice.html', context=context_object)
+    rendered_html = get_template(template_name).render(
+       context_object,
+        request
+    ).encode(encoding='UTF-8')
     
-    return ret_val
+    pdf_file = HTML(string=rendered_html, base_url=request.build_absolute_uri())
+    pdf_file.render()
+    pdf_container = pdf_file.write_pdf(
+        stylesheets=[
+            CSS(
+                'ui/' + settings.STATIC_URL + 'ui/css/bootstrap.min.css'
+            )
+        ]
+    )
+    response = HttpResponse(content_type='application/pdf;')
+    response['Content-Disposition'] = 'filename=Invoice ' + company_to_invoice + str(datetime.now().month) + '.pdf'
+    response['Content-Transfer-Encoding'] = 'UTF-8'
+    with tempfile.NamedTemporaryFile(delete=True) as pdf_writer:
+        pdf_writer.write(pdf_container)
+        pdf_writer.flush()
+        pdf_writer = open(pdf_writer.name, 'rb')
+        response.write(pdf_writer.read())
+    return response
+    # return html_to_render
+    
+    # return ret_val
