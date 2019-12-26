@@ -25,7 +25,6 @@ don't know how to do it yet, but it should:
 def generate_invoice(request, username, template_name):
     user_to_invoice = SMSUser.objects.get(username=username)
     user_invoice = Invoice(invoice_to=user_to_invoice)
-    # TODO you have to figure out how to get the company name of each users on the SMSMessages table
 
     company_to_invoice = user_to_invoice.company_name
     company_tin = user_to_invoice.company_tin
@@ -68,8 +67,7 @@ def generate_invoice(request, username, template_name):
         # sent_date__month = datetime.now().month - 1,
         sending_user__company_name=company_to_invoice
     )
-    
-    # TODO feed the below object to a pdf renderer and return that pdf rendered object
+
     context_object =  {
         "username": user_to_invoice,
         "company_name": company_to_invoice,

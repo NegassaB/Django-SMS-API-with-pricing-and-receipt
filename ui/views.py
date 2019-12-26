@@ -189,7 +189,8 @@ def invoice_generator(request, username):
     This function is responsible for generating and returning the invoice for each company
     as a pdf.
     """
-    ret_val = generate_invoice(request, username, template_name="ui/invoice.html")
-    return ret_val
+    return render(request, template_name='ui/invoices.html', context={})
+    ret_val = generate_invoice(request, username, template_name="ui/invoice_template.html")
+    # return ret_val
     # return render(request, ret_val)
     # return render(request, template_name="ui/invoice.html", context={})
