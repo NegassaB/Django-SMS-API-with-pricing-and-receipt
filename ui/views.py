@@ -3,8 +3,11 @@ import requests as request_library
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse, JsonResponse
+from django.contrib.auth.decorators import login_required
 
-from .checking_utility import check_username_for_registration, check_username, get_total_msgs
+from .ui_utilities import check_username_for_registration, check_username, get_total_msgs
+from commons.models import SMSMessages, SMSUser, Invoice
+from .invoice_generator import generate_invoice
 
 # Create your views here.
 
@@ -94,6 +97,7 @@ def dashboard(request, username):
     If it's redirected from the login, it will get the username and the login status from the request
     and pass that to the dashboard.html template.
     """
+    user = request.user
     check_username_flag, username_user_token = check_username(username)
     if username and check_username_flag:
         return render(
@@ -115,7 +119,7 @@ def ajax_dashboard_update(request):
     This function is used to generate the view for the ajax requests that will come from the ui.
     It will get the user token from the ajax request and then gets all the text messages sent by
     that user & the messages sent by that user during the last 5 minutes from the get_total_msgs()
-    function declared in checking_utility. It will also calculate how much has been sent in the last 5 minutes.
+    function declared in ui_utilities. It will also calculate how much has been sent in the last 5 minutes.
     """
     if request.is_ajax():
         # the username of the user that has sent the texts
@@ -168,7 +172,6 @@ def register_request(request):
                 messages.error(request, "Unable to register, please try again!")
             else:
                 messages.success(request, "Successfully created your sms.et account, please login to your account.")
-                # TODO give the username to the redirect function
                 return redirect('ui:login')
 
         elif check_username_result_flag == True:
@@ -178,3 +181,16 @@ def register_request(request):
             return render(request=request, template_name="ui/all404.html", context={"error": "Problem encountered, please try again."})
 
     return render(request=request, template_name="ui/register.html")
+
+
+def invoice_generator(request, username):
+    # TODO this might need to change to a webpage that displays all the invoices for a user
+    """
+    This function is responsible for generating and returning the invoice for each company
+    as a pdf.
+    """
+    return render(request, template_name='ui/invoices.html', context={})
+    ret_val = generate_invoice(request, username, template_name="ui/invoice_template.html")
+    # return ret_val
+    # return render(request, ret_val)
+    # return render(request, template_name="ui/invoice.html", context={})

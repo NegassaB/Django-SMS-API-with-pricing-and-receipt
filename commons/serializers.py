@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
-from commons.models import SMSUser, SMSPrice, Type, SMSMessages
+from commons.models import SMSUser, SMSPrice, Type, SMSMessages, Invoice
 
 
 class SMSUserSerializer(serializers.ModelSerializer):
@@ -84,3 +84,36 @@ class SMSMessagesSerializer(serializers.ModelSerializer):
             if instance.is_valid():
                 instance.save()
             return instance
+
+
+class InvoiceSerialzer(serializers.ModelSerializer):
+    """
+    A class for serializing the Invoice model's data. It sub-classes the
+    ModelSerializer class from serializer's module.
+    """
+
+    class Meta:
+        model = Invoice
+        fields = '__all__'
+    
+    
+    def create(self, validated_data):
+        """
+        The method used to create a new Invoice, (all this is based on the djangoapibook process).
+        """
+        user_invoice = Invoice(invoice_to=validated_data['username'])
+        return user_invoice
+    
+    
+    def update(self, instance, validated_data):
+        """
+        This method is used to update an instance of the Invoice payment_status attribute.
+        It get's the value for payment_status from the input parameter, updates the specific instance
+        of the InvoiceSerializer, saves that instance and returns it.
+        """
+        instance = self.get_object()
+        instance.payment_status = validated_data.get('payment_status', instance.payment_status)
+        # checks if the instance is valid before saving it into db, don't know what happens if it fails tho
+        if instance.is_valid():
+            instance.save()
+        return instance

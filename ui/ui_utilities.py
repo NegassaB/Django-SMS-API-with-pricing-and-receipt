@@ -116,14 +116,24 @@ def get_total_msgs(user_token):
         counter = 0
         time_to_evaluate = datetime.now(timezone.utc)
         last5_sent_counter = 0
-        json_data = json.loads(get_msgs.text)
-        for result in json_data['result_objects']:
-            if result['id']:
-                counter += 1
-            if calculate_the_last_5minutes_sent(parse(result['sent_date'])):
-                last5_sent_counter += 1
-        
-        return counter, last5_sent_counter
+        # if the status code is 404 it sets the counter and last5_sent_counter to
+        # zero and returns them
+        if get_msgs.status_code == 404:
+            counter = 0
+            last5_sent_counter = 0
+        else:
+            json_data = json.loads(get_msgs.text)
+            for result in json_data['result_objects']:
+                if result['id']:
+                    counter += 1
+                else:
+                    counter = 0
+                if calculate_the_last_5minutes_sent(parse(result['sent_date'])):
+                    last5_sent_counter += 1
+                else:
+                    last5_sent_counter = 0
+    
+    return counter, last5_sent_counter
 
 
 """
