@@ -95,7 +95,7 @@ def generate_invoice(request, username, template_name):
     pdf_file.render()
     pdf_container = pdf_file.write_pdf(
         stylesheets=[
-            CSS(string='@page {size: A4; margin: 0.25cm;}'
+            CSS(string='@page {size: A4; margin: 0.1cm;}'
                 'ui' + settings.STATIC_URL + 'ui/css/bootstrap.min.css',
                 _check_mime_type=True,
                 font_config=font_config,
