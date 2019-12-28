@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
 from django.shortcuts import get_object_or_404, get_list_or_404
-from django.contrib.auth import authenticate, logout
+from django.contrib.auth import authenticate
 
 from commons.models import SMSUser, SMSPrice, Type
 from commons.serializers import SMSUserSerializer, SMSPriceSerializer, TypeSerializer, InvoiceSerialzer
@@ -184,20 +184,6 @@ class LoginView(APIView):
                 },
                 status=status.HTTP_401_UNAUTHORIZED
             )
-
-
-class LogoutView(APIView):
-    def get(self, request):
-        # user_logout = logout(request.user)
-        if user_logout:
-            return Response(
-                {
-                    "message": "successfully logged out."
-                },
-                status=status.HTTP_202_ACCEPTED
-            )
-        else:
-            return Response({"message": "logout didn't work"})
 
 
 class InvoiceCreate(generics.CreateAPIView):

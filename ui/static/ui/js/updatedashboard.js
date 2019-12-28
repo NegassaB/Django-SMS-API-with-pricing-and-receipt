@@ -1,4 +1,4 @@
-window.onload = getData;
+window.onload = updateData;
 
 function updateData() {
     var timeout = 10000;
