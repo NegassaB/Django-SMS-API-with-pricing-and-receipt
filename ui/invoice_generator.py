@@ -22,6 +22,7 @@ don't know how to do it yet, but it should:
 6. save to user account under invoices section as file and pdf
 """
 
+#TODO run this in a separate thread
 def generate_invoice(request, username, template_name):
     user_to_invoice = SMSUser.objects.get(username=username)
     user_invoice = Invoice(invoice_to=user_to_invoice)
@@ -50,8 +51,8 @@ def generate_invoice(request, username, template_name):
             sending_user=user,
             delivery_status="True",
             sent_date__year=datetime.now().year,
-            sent_date__month = 10
-            # sent_date__month = datetime.now().month - 2
+            # sent_date__month = 10
+            sent_date__month = datetime.now().month - 1
             )
         all_sms_sent_by_users = {
             "all_sms_sent": [
