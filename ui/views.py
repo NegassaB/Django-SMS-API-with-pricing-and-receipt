@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse, JsonResponse, HttpResponsePermanentRedirect
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 from .ui_utilities import check_username_for_registration, check_username, get_total_msgs
 from commons.models import SMSMessages, SMSUser, Invoice
@@ -75,16 +76,14 @@ def logout_request(request):
     """
     This function is used to logout a user from the web interface.
     """
-    if request.session.has_key('is_logged_in') and request.session['is_logged_in'] == True:
+    if request.session.get('is_logged_in') and request.session['is_logged_in'] == True:
         request.session['is_logged_in'] = False
         del request.session['is_logged_in']
         messages.warning(request, "You have logged out")
-        return redirect("ui:login")
-         # return JsonResponse(
-    #     {
-    #         redirect_url: '/ui/homepage/',
-    #     }
-    # )
+        # redirect("ui:login")
+        return JsonResponse({
+            'redirect_url': reverse("ui:login")
+        })
     else:
         messages.error(request, "You need to login first")
         return redirect('ui:login')
@@ -97,7 +96,7 @@ def dashboard(request, username):
     If it's redirected from the login, it will get the username and the login status from the request
     and pass that to the dashboard.html template.
     """
-    if request.session.has_key("is_logged_in") and request.session['is_logged_in'] == True:
+    if request.session.get("is_logged_in") and request.session['is_logged_in'] == True:
         user = request.user
         check_username_flag, username_user_token = check_username(username)
         if username and check_username_flag:
@@ -125,7 +124,7 @@ def ajax_dashboard_update(request):
     that user & the messages sent by that user during the last 5 minutes from the get_total_msgs()
     function declared in ui_utilities. It will also calculate how much has been sent in the last 5 minutes.
     """
-    if request.is_ajax() and request.session.has_key('is_logged_in') and request.session['is_logged_in'] == True:
+    if request.is_ajax() and request.session.get('is_logged_in') and request.session['is_logged_in'] == True:
         # the username of the user that has sent the texts
         ajax_user_token = request.POST.get('ajaxUserToken')
         total_msgs, last5_sent = get_total_msgs(ajax_user_token)
@@ -135,6 +134,9 @@ def ajax_dashboard_update(request):
                 'last5_sent': last5_sent
             }
         )
+    else:
+        return render(request, template_name='ui/dashboard.html', context={})
+    
 
 
 def register_request(request):

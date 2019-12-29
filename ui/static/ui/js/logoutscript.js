@@ -3,7 +3,11 @@ $("#logout_button").click(function(){
     $.get(
         url,
         function(data){
-            window.location.href = url;
+            if(data == null){
+                window.alert("no workings");
+            } else {
+                window.location.assign(data.redirect_url);
+            }
         },
     );
 });
