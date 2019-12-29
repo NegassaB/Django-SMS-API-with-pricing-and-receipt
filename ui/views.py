@@ -2,9 +2,14 @@ from django.shortcuts import render, redirect
 import requests as request_library
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponsePermanentRedirect
+from django.contrib.auth.decorators import login_required
 
-from .checking_utility import check_username_for_registration, check_username, get_total_msgs
+from .ui_utilities import check_username_for_registration, check_username, get_total_msgs
+from commons.models import SMSMessages, SMSUser, Invoice
+from .invoice_generator import generate_invoice
+
+import json
 
 # Create your views here.
 
@@ -45,17 +50,20 @@ def login_request(request):
         except Exception as e:
             # TODO find a better thing to do with the exception
             with open('login_tries.txt', 'a') as login_response_objects:
-                login_response_objects.write(str(e) + "\n\n")
+                login_response_objects.write(str(payload['username']) + "\t" + str(e) + "\n\n")
 
             messages.error(request, "Incorrect username or password")
             return render(request=request, template_name="ui/login.html")
         else:
             if login_response is not None:
                 user_token = login_response.text
+                #TODO the request.session['is_logged_in'] needs to be upgraded to a better solution
+                request.session['is_logged_in'] = True
                 messages.success(request, f"You are now logged in as {payload['username']}", fail_silently=True)
                 # messages.info(request, f"{user_token}")
                 return redirect('ui:dashboard', username=payload['username'])
             else:
+                request.session['is_logged_in'] = False
                 messages.error(request, "Incorrect username or password")
                 return render(request=request, template_name="ui/login.html")
     else:
@@ -64,27 +72,22 @@ def login_request(request):
     
 
 def logout_request(request):
-    if request.method == 'GET':
-        try:
-            logout_response = request_library.get(
-                "http://localhost:8055/commons/logout",
-                headers={
-                    'content-type': "application/x-www-form-urlencoded"
-                },
-                timeout=(3, 6)
-            )
-        except Exception as e:
-            with open('logout_tries.txt', 'a') as logout_response_objects:
-                logout_response_objects.write(str(e) + "\n\n")
-
-            messages.error(request, "Unable to logout")
-            # return render(request=request, template_name="ui/dasboard.html")
-        else:
-            messages.info(logout_response['message'])
-            return redirect('ui:homepage')
+    """
+    This function is used to logout a user from the web interface.
+    """
+    if request.session.has_key('is_logged_in') and request.session['is_logged_in'] == True:
+        request.session['is_logged_in'] = False
+        del request.session['is_logged_in']
+        messages.warning(request, "You have logged out")
+        return redirect("ui:login")
+         # return JsonResponse(
+    #     {
+    #         redirect_url: '/ui/homepage/',
+    #     }
+    # )
     else:
-        messages.error(request, "Unable to log out")
-        # return render(request=request, template_name="ui/dashboard.html")
+        messages.error(request, "You need to login first")
+        return redirect('ui:login')
 
 
 def dashboard(request, username):
@@ -94,19 +97,24 @@ def dashboard(request, username):
     If it's redirected from the login, it will get the username and the login status from the request
     and pass that to the dashboard.html template.
     """
-    check_username_flag, username_user_token = check_username(username)
-    if username and check_username_flag:
-        return render(
-            request=request,
-            template_name="ui/dashboard.html",
-            context={
-                "login_successful": True,
-                "username": username,
-                "user_token": username_user_token
-            })
+    if request.session.has_key("is_logged_in") and request.session['is_logged_in'] == True:
+        user = request.user
+        check_username_flag, username_user_token = check_username(username)
+        if username and check_username_flag:
+          return render(
+              request=request,
+              template_name="ui/dashboard.html",
+              context={
+                  "login_successful": True,
+                  "username": username,
+                  "user_token": username_user_token
+              })
+        else:
+          messages.error(request, "username doesn't exist")
+          # return render(request=request, template_name="ui/all404.html", context={"error":"username doesn't exist"})
+          return redirect('ui:login')
     else:
-        messages.error(request, "username doesn't exist")
-        # return render(request=request, template_name="ui/all404.html", context={"error":"username doesn't exist"})
+        messages.error(request, "You need to login first")
         return redirect('ui:login')
 
 
@@ -115,9 +123,9 @@ def ajax_dashboard_update(request):
     This function is used to generate the view for the ajax requests that will come from the ui.
     It will get the user token from the ajax request and then gets all the text messages sent by
     that user & the messages sent by that user during the last 5 minutes from the get_total_msgs()
-    function declared in checking_utility. It will also calculate how much has been sent in the last 5 minutes.
+    function declared in ui_utilities. It will also calculate how much has been sent in the last 5 minutes.
     """
-    if request.is_ajax():
+    if request.is_ajax() and request.session.has_key('is_logged_in') and request.session['is_logged_in'] == True:
         # the username of the user that has sent the texts
         ajax_user_token = request.POST.get('ajaxUserToken')
         total_msgs, last5_sent = get_total_msgs(ajax_user_token)
@@ -168,7 +176,6 @@ def register_request(request):
                 messages.error(request, "Unable to register, please try again!")
             else:
                 messages.success(request, "Successfully created your sms.et account, please login to your account.")
-                # TODO give the username to the redirect function
                 return redirect('ui:login')
 
         elif check_username_result_flag == True:
@@ -178,3 +185,20 @@ def register_request(request):
             return render(request=request, template_name="ui/all404.html", context={"error": "Problem encountered, please try again."})
 
     return render(request=request, template_name="ui/register.html")
+
+
+def invoice_generator(request, username):
+    # TODO this might need to change to a webpage that displays all the invoices for a user
+    """
+    This function is responsible for generating and returning the invoice for each company
+    as a pdf.
+    """
+    if request.session['is_logged_in'] == True:
+        return render(request, template_name='ui/invoices.html', context={})
+        ret_val = generate_invoice(request, username, template_name="ui/invoice_template.html")
+    else:
+        message.error(request, "You need to login first")
+        return redirect('ui:login')
+    # return ret_val
+    # return render(request, ret_val)
+    # return render(request, template_name="ui/invoice.html", context={})
