@@ -200,10 +200,17 @@ def invoice_generator(request, username):
     as a pdf.
     """
     if request.session.get('is_logged_in') and request.session['is_logged_in'] == True:
-        return render(request, template_name='ui/invoices.html', context={})
+        user = request.user
+        return render(
+            request=request,
+            template_name="ui/invoices.html",
+            context={
+                "username": username
+            }
+        )
         ret_val = generate_invoice(request, username, template_name="ui/invoice_template.html")
     else:
-        message.error(request, "You need to login first")
+        messages.error(request, "You need to login first")
         return redirect('ui:login')
     # return ret_val
     # return render(request, ret_val)

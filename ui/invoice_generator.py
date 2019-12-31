@@ -10,6 +10,8 @@ from weasyprint import HTML, CSS
 from weasyprint.fonts import FontConfiguration
 import tempfile
 
+from django.core.files.uploadedfile import SimpleUploadedFile
+
 from datetime import datetime, date
 
 """
