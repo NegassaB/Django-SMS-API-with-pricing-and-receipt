@@ -7,7 +7,7 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbar-main-navigation">
-            {% if login_successful %}
+            {% if request.session.is_logged_in %}
         <div class="navbar-nav navbarColor02">
             <a class="nav-item nav-link active" href="/ui/dashboard/{{username}}/">Dashboard <span class="sr-only">(current)</span></a>
             <div class="dropdown">
@@ -29,7 +29,7 @@
         </div>
             {% endif %}
     </div>
-    {% if login_successful is None %}
+    {% if request.session.is_logged_in is None %}
     <div class="nav justify-content-end float-right">
         <button class="btn btn-link btn-light mr-1" type="button" id="login_button" onclick="window.location='/ui/login'" value="Login to your account">Login</button>
         <button class="btn btn-link btn-light ml-2" type="button" id="register_button" onclick="window.location='/ui/register/'" value="Register for an account">Register</button>

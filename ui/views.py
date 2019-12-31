@@ -80,10 +80,14 @@ def logout_request(request):
         request.session['is_logged_in'] = False
         del request.session['is_logged_in']
         messages.warning(request, "You have logged out")
-        # redirect("ui:login")
-        return JsonResponse({
-            'redirect_url': reverse("ui:login")
-        })
+        if request.is_ajax():
+            return JsonResponse(
+                {
+                'redirect_url': reverse("ui:login")
+                }
+            )
+        else:
+            return redirect("ui:login")
     else:
         messages.error(request, "You need to login first")
         return redirect('ui:login')
@@ -195,11 +199,18 @@ def invoice_generator(request, username):
     This function is responsible for generating and returning the invoice for each company
     as a pdf.
     """
-    if request.session['is_logged_in'] == True:
-        return render(request, template_name='ui/invoices.html', context={})
+    if request.session.get('is_logged_in') and request.session['is_logged_in'] == True:
+        user = request.user
+        return render(
+            request=request,
+            template_name="ui/invoices.html",
+            context={
+                "username": username
+            }
+        )
         ret_val = generate_invoice(request, username, template_name="ui/invoice_template.html")
     else:
-        message.error(request, "You need to login first")
+        messages.error(request, "You need to login first")
         return redirect('ui:login')
     # return ret_val
     # return render(request, ret_val)
