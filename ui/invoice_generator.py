@@ -66,8 +66,8 @@ def generate_invoice(request, username, template_name):
         }
     total_amount_sent = SMSMessages.objects.filter(
         sent_date__year = datetime.now().year,
-        sent_date__month = 10,
-        # sent_date__month = datetime.now().month - 1,
+        # sent_date__month = 10,
+        sent_date__month = datetime.now().month - 1,
         sending_user__company_name=company_to_invoice
     )
 

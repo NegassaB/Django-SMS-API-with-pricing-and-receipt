@@ -202,10 +202,11 @@ def invoice_request(request, username):
     as a pdf.
     """
     if request.session.get('is_logged_in') and request.session['is_logged_in'] == True:
-        # thread to run the invoice generation part
-        t = threading.Thread(target=generate_invoice, args=[request, username, "ui/invoice_template.html"])
-        t.setDaemon(True)
-        t.start()
+        # thread to run the invoice generation part,
+        # decided to run it in crontab instead
+        # t = threading.Thread(target=generate_invoice, args=[request, username, "ui/invoice_template.html"])
+        # t.setDaemon(True)
+        # t.start()
         
         # generate_invoice(request, username, "ui/invoice_template.html")
         user_object = SMSUser.objects.get(username=username)
