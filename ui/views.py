@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 import requests as request_library
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
-from django.http import HttpResponse, JsonResponse, HttpResponsePermanentRedirect
+from django.http import HttpResponse, JsonResponse, HttpResponsePermanentRedirect, FileResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
@@ -11,6 +11,8 @@ from commons.models import SMSMessages, SMSUser, Invoice
 from .invoice_generator import generate_invoice
 
 import json
+
+import threading
 
 # Create your views here.
 
@@ -193,25 +195,63 @@ def register_request(request):
     return render(request=request, template_name="ui/register.html")
 
 
-def invoice_generator(request, username):
+def invoice_request(request, username):
     # TODO this might need to change to a webpage that displays all the invoices for a user
     """
     This function is responsible for generating and returning the invoice for each company
     as a pdf.
     """
     if request.session.get('is_logged_in') and request.session['is_logged_in'] == True:
-        user = request.user
+        # thread to run the invoice generation part
+        t = threading.Thread(target=generate_invoice, args=[request, username, "ui/invoice_template.html"])
+        t.setDaemon(True)
+        t.start()
+        
+        # generate_invoice(request, username, "ui/invoice_template.html")
+        user_object = SMSUser.objects.get(username=username)
+        all_invoices = Invoice.objects.filter(invoice_to=user_object)
+        list_invoices = []
+        for single_invoice in all_invoices:
+            list_invoices.append(single_invoice.invoice_file)
+        
         return render(
             request=request,
             template_name="ui/invoices.html",
             context={
+                "list_invoices": list_invoices,
                 "username": username
             }
         )
-        ret_val = generate_invoice(request, username, template_name="ui/invoice_template.html")
+        # ret_val = generate_invoice(request, username, template_name="ui/invoice_template.html")
     else:
         messages.error(request, "You need to login first")
         return redirect('ui:login')
-    # return ret_val
-    # return render(request, ret_val)
-    # return render(request, template_name="ui/invoice.html", context={})
+
+
+def display_invoice(request, username, slug):
+    if request.session.get('is_logged_in') and request.session['is_logged_in'] == True:
+        try:
+            return FileResponse(open("invoices/" + slug, 'rb'), content_type="application/pdf")
+        except Exception as e:
+            return render(
+                request,
+                template_name="ui/all404.html",
+                context={
+                    "username": username,
+                    "error": str(e)
+                }
+            )
+
+
+def settings_request(request, username):
+    if request.session.get('is_logged_in') and request.session['is_logged_in'] == True:
+        return render(
+            request,
+            template_name="ui/settings.html",
+            context={
+                "username": username,
+            }
+        )
+    else:
+        messages.error(request, "You need to login first")
+        return redirect('ui:login')

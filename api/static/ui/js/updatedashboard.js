@@ -1,4 +1,4 @@
-window.onload = getData;
+window.onload = updateData;
 
 function updateData() {
     var timeout = 10000;
@@ -7,7 +7,7 @@ function updateData() {
 }
 
 function getData(){
-    url = "http://localhost:8055/ui/ajax/dashboard_update/";
+    url = "http://localhost:8055/ui/dashboard_update/";
     $.post(
         url,
         {
@@ -21,6 +21,9 @@ function getData(){
             }
             if(data.last5_sent !=0 || data.last5_sent != null) {
                 $("#ajaxLast5minSent").text(data.last5_sent)
+            }
+            if(data.last5_sent == null){
+                $("#ajaxLast%minSent").text(0)
             }
         },
         "json");

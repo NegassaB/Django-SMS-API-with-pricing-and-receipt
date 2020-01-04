@@ -25,5 +25,7 @@ urlpatterns = [
     path('logout_request/', views.logout_request, name="logout"),
     path('register/', views.register_request, name="register"),
     path('dashboard_update/', views.ajax_dashboard_update, name="ajax_dashboard_update"),
-    path('<username>/invoice/', views.invoice_generator, name="invoice_generator"),
+    path('<username>/invoice/', views.invoice_request, name="invoice_generator"),
+    path('<username>/invoice/invoices/<slug>', views.display_invoice, name="display_invoice"),
+    path('<username>/settings', views.settings_request, name="settings"),
 ]

@@ -78,6 +78,8 @@ class Invoice(models.Model):
     # invoice_number = models.CharField(max_length=10, default=1, validators=[RegexValidator(r'^\d{1, 10}$')], primary_key=True)
     invoice_to = models.ForeignKey("SMSUser", related_name="invoiced_user", on_delete=models.PROTECT, related_query_name="invoiced_user")
     payment_status = models.BooleanField(default=False)
+    invoice_file = models.FileField(upload_to='invoices/', null=True, blank=True)
+    invoice_created = models.DateTimeField(auto_now=True)
 
 
     class Meta:

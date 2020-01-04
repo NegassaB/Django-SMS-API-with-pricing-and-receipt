@@ -9,12 +9,12 @@
     <div class="collapse navbar-collapse" id="navbar-main-navigation">
             {% if request.session.is_logged_in %}
         <div class="navbar-nav navbarColor02">
-            <a class="nav-item nav-link active" href="/ui/dashboard/{{username}}/">Dashboard <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link active" href="/ui/dashboard/{{username}}/"> Dashboard <span class="sr-only">(current)</span></a>
             <div class="dropdown">
                 <a class="nav-item btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ username }}</a>
 
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item" href="/ui/{{username}}/invoice">Invoice</a>
+                    <a class="dropdown-item" href="/ui/{{username}}/invoice">Invoices</a>
                     <a class="dropdown-item" href="/ui/{{username}}/settings">Settings</a>
                 </div>
             </div>
@@ -31,7 +31,7 @@
     </div>
     {% if request.session.is_logged_in is None %}
     <div class="nav justify-content-end float-right">
-        <button class="btn btn-link btn-light mr-1" type="button" id="login_button" onclick="window.location='/ui/login'" value="Login to your account">Login</button>
+        <button class="btn btn-link btn-light mr-1" type="button" id="login_button" onclick="window.location='/ui/login/'" value="Login to your account">Login</button>
         <button class="btn btn-link btn-light ml-2" type="button" id="register_button" onclick="window.location='/ui/register/'" value="Register for an account">Register</button>
     </div>
     {% endif %}
