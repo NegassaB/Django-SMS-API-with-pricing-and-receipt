@@ -78,7 +78,7 @@ def generate_invoice(request, username, template_name):
         "invoice_number": invoice_number,
         "tin": company_tin,
         "email": user_email,
-        "bill_month": datetime.now().month - 1,
+        "bill_month": str(datetime.now().month - 1),
         "all_sms_sent": all_sms_sent_by_users,
         "total_amount_sent": total_amount_sent.count(),
         "vat": total_amount_sent.count() * 0.70 * 0.15,
@@ -113,9 +113,21 @@ def generate_invoice(request, username, template_name):
     with tempfile.NamedTemporaryFile(delete=True) as pdf_writer:
         pdf_writer.write(pdf_container)
         pdf_writer.flush()
-        pdf_writer = open(pdf_writer.name, 'rb')
-        response.write(pdf_writer.read())
-    return response
+        user_invoice.invoice_file = SimpleUploadedFile(
+            "Invoice-" +
+            company_to_invoice +
+            "-" +
+            str(datetime.now().month) +
+            "-" +
+            str(datetime.now().year) +
+            ".pdf",
+            pdf_container,
+            content_type="application/pdf"
+        )
+        user_invoice.save()
+        # pdf_writer = open(pdf_writer.name, 'rb')
+        # response.write(pdf_writer.read())
+    # return response
     # return html_to_render
     
     # return ret_val
