@@ -11,6 +11,13 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import environ
+
+# setting environ
+env = environ.Env(DEBUG=(bool, False))
+
+# reading the .env file
+environ.Env.read_env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,12 +27,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '5)k_s37s6hw64gy5@s=2!*xlq1b&vtgy50jxgnf-n3k6n73fc1'
+SECRET_KEY = env('SECRET_KEY')
+# SECRET_KEY = '5)k_s37s6hw64gy5@s=2!*xlq1b&vtgy50jxgnf-n3k6n73fc1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
+# DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "test.sms.et", ]
 
 
 # Application definition
@@ -83,19 +92,23 @@ WSGI_APPLICATION = 'api.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'api_db_sms_et',
-        'USER': 'api_user',
-        'PASSWORD': 'api.user',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'DEFAULT-CHARACTER-SET': 'UTF8',
-        'OPTIONS': {
-            'init_command': 'SET foreign_key_checks=0;'
-            },
-    }
+    # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
+    'default': env.db(),
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'api_db_sms_et',
+#         'USER': 'api_user',
+#         'PASSWORD': 'api.user',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#         'DEFAULT-CHARACTER-SET': 'UTF8',
+#         'OPTIONS': {
+#             'init_command': 'SET foreign_key_checks=0;'
+#             },
+#     }
+# }
 
 AUTH_USER_MODEL = 'commons.SMSUser'
 
@@ -153,3 +166,33 @@ REST_FRAMEWORK = {
             'rest_framework.permissions.IsAuthenticated',
         )
     }
+
+# used to avoid transmitting CSRF cookie over HTTP accidentally.
+# CSRF_COOKIE_SECURE = True
+
+# used to avoid transmitting SESSION cookie over HTTP accidentally.
+# SESSION_COOKIE_SECURE = True
+
+# used to...IDK, motherfucking manage.py check --deploy said to do so
+# SECURE_HSTS_SECONDS = 346000
+
+# used to tell re-route all sub-domains to ssl.
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+# used to submit the site to the browser preload list.
+# SECURE_HSTS_PRELOAD = True
+
+# used to make sure that server prevent the browser from identifying content types incorrectly.
+# SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# used to make sure that server activate the browser's XSS filtering and help prevent XSS attacks.
+# SECURE_BROWSER_XSS_FILTER = True
+
+# used to make sure that server redirects all connections to HTTPS.
+# SECURE_SSL_REDIRECT = True
+
+# used to prevent clickjacking (redirecting user via an iframe or hidden frame).
+X_FRAME_OPTIONS = 'DENY'
+
+# enables persistent database connections as to have a nice speed-up when connecting to the database accounts for a significant part of the request processing time.
+# CONN_MAX_AGE = None
