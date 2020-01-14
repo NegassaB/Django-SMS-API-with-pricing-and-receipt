@@ -95,20 +95,6 @@ DATABASES = {
     # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
     'default': env.db(),
 }
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'api_db_sms_et',
-#         'USER': 'api_user',
-#         'PASSWORD': 'api.user',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#         'DEFAULT-CHARACTER-SET': 'UTF8',
-#         'OPTIONS': {
-#             'init_command': 'SET foreign_key_checks=0;'
-#             },
-#     }
-# }
 
 AUTH_USER_MODEL = 'commons.SMSUser'
 
@@ -148,7 +134,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/ui/'
+STATIC_URL = '/static/'
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
