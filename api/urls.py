@@ -19,7 +19,7 @@ from ui.views import homepage
 
 urlpatterns = [
     # for the homepage
-    path('homepage/', homepage, name="homepage"),
+    path('/', homepage, name="homepage"),
     # for the admin page
     path('admin/', admin.site.urls),
     # for the commons app
