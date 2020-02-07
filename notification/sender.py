@@ -9,12 +9,13 @@ import json
 from rest_framework.response import Response
 from rest_framework import status
 
+base_url = "http://localhost:5000/"
 
 def sender(sms_data):
     """
     The actual function that accesses the server and sends the sms.
     """
-    sending_url = "http://localhost:5000/api/sendsms/"
+    sending_url = base_url + "api/sendsms/"
     sending_headers = {"content-type": "application/x-www-form-urlencoded"}
 
     response = requests.Response()
@@ -30,7 +31,7 @@ def sender(sms_data):
     except Exception as e:
         # TODO: find a better thing to do with the exception
         # perhaps a log file, like the below one
-        with open('output.txt', 'a') as response_obejcts:
+        with open('sms_sending_errors_output.txt', 'a') as response_obejcts:
             response_obejcts.write(str(e))
         return False, response
     else:
