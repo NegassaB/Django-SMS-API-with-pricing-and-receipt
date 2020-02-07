@@ -21,6 +21,7 @@ This file is responsible for the entire ui view of the web app.
 all user interface/experience is done and used here.
 """
 
+base_url = "http://localhost:8055/"
 
 def homepage(request):
     return render(request=request, template_name="ui/index.html")
@@ -42,7 +43,7 @@ def login_request(request):
             }
 
             login_response = request_library.post(
-                "http://localhost:8055/commons/login/",
+                base_url + "commons/login/",
                 data=payload,
                 headers={
                     'content-type': "application/x-www-form-urlencoded"
@@ -167,7 +168,7 @@ def register_request(request):
                 }
                 
                 reg_response = request_library.post(
-                    "http://localhost:8055/commons/smsusers/",
+                    base_url + "commons/smsusers/",
                     data=registration_data_payload,
                     headers={
                         'content-type': "application/x-www-form-urlencoded"
