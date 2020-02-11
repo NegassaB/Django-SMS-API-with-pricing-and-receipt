@@ -72,7 +72,7 @@ class SMSView(APIView):
             data={
                 "sms_number_to": request.data.get("sms_number_to"),
                 "sms_content": request.data.get("sms_content"),
-                "sending_user": request.data.get("sending_user")
+                "sending_user": request.auth.user_id,
             }
         )
         permission_classes = (permissions.IsAuthenticated)
@@ -88,6 +88,10 @@ class SMSView(APIView):
             }
             # used for the instance, find a better name
             sms_object = sms_messages_serializer.save()
+        else:
+            with open('sms_sending_errors_notification_serializer.txt', 'a') as notification_resp_obj:
+                notification_resp_obj.write(str(sms_messages_serializer.errors) + "\t" + str(datetime.datetime.now()))
+            data_to_send = None
 
         # TODO refactor this into it's own function
         max_retry = 0
@@ -97,13 +101,15 @@ class SMSView(APIView):
             status_flag, status_response = sender(data_to_send)
 
             if not status_flag:
-                resp = Response(
-                    data={
-                        "status": "sms not sent"
-                    },
-                    status=status_response.status_code,
-                    content_type="application/json"
-                )
+                # resp = Response(
+                #     data={
+                #         "status": "sms not sent"
+                #     },
+                #     status=status_response.status_code,
+                #     content_type="application/json"
+                # )
+                with open('sms_sending_errors_notification_sender_resp.txt', 'a') as notification_sender_resp_obj:
+                    notification_sender_resp_obj.write(str(status_flag) + "\t" + str(status_response) + "\t" + str(datetime.datetime.now()))
             else:
                 # the update method defined in the SMSMessagesSerializer class
                 # needs an instance to run with, so that's what has been changed.
