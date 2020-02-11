@@ -101,15 +101,16 @@ class SMSView(APIView):
             status_flag, status_response = sender(data_to_send)
 
             if not status_flag:
-                # resp = Response(
-                #     data={
-                #         "status": "sms not sent"
-                #     },
-                #     status=status_response.status_code,
-                #     content_type="application/json"
-                # )
-                with open('sms_sending_errors_notification_sender_resp.txt', 'a') as notification_sender_resp_obj:
-                    notification_sender_resp_obj.write(str(status_flag) + "\t" + str(status_response) + "\t" + str(datetime.datetime.now()))
+                # find something better to do with this failure and no not save it to a text file on server
+                resp = Response(
+                    data={
+                        "status": "sms not sent"
+                    },
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    content_type="application/json"
+                )
+                # with open('sms_sending_errors_notification_sender_resp.txt', 'a') as notification_sender_resp_obj:
+                #     notification_sender_resp_obj.write(str(status_flag) + "\t" + str(status_response) + "\t" + str(datetime.datetime.now()))
             else:
                 # the update method defined in the SMSMessagesSerializer class
                 # needs an instance to run with, so that's what has been changed.
