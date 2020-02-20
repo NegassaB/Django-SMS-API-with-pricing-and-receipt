@@ -8,7 +8,7 @@ from datetime import datetime, timezone, timedelta
 # used for parsing the datetime object from the json response recieved from sms messages
 from dateutil.parser import parse
 
-base_url = "http://test.sms.et/"
+base_url = "http://localhost:5000/"
 
 """
 This file is responsible for providing a checking mechanism to the ui.views file.
@@ -36,7 +36,7 @@ def check_username_for_registration(request):
         )
         check_username_response.raise_for_status()
     except Exception as e:
-        with open('check_username_tries.txt', 'a') as cut_object:
+        with open('/negassa/test.sms.et_errors/check_username_tries.txt', 'a') as cut_object:
             cut_object.write(str(e) + "\n\n")
             return False, e.response.status_code
     else:
