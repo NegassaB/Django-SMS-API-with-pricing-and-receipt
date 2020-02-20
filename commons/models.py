@@ -9,7 +9,7 @@ from django.core.validators import RegexValidator
 
 class SMSUser(AbstractUser):
     username = models.CharField(max_length=50, unique=True)
-    email = models.EmailField(verbose_name='company email', max_length=254, unique=True)
+    email = models.EmailField(verbose_name='company email', max_length=191, unique=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     company_name = models.CharField(max_length=150)

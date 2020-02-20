@@ -1,0 +1,3 @@
+I emptyed the models-using functions, methods, apps whilst keeping the files. So empty out commons/apiviews.py, notification/apiviews.py, commons/urls.py, notfication/urls.py, ui/views.py, ui/urls.py, commons/serializers.py, notification/serializers.py etc but keep the files. Then run manage.py makemigrations and then manage.py migrate. That fucking fixes it, but I don't know if it works or not.
+
+	PLEASE DON'T FORGET TO BACK UP ALL THE FILES AND FOLDER 1ST 

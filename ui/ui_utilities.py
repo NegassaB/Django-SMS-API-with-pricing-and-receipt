@@ -70,7 +70,7 @@ def check_username(username):
             },
             timeout=(3, 6))
     except Exception as e:
-        with open('check_username_existence_tries.txt', 'a') as cuet_object:
+        with open('/negassa/test.sms.et_errors/check_username_existence_tries.txt', 'a') as cuet_object:
             cuet_object.write(str(e) + "\n\n")
             return False
     else:
@@ -108,7 +108,7 @@ def get_total_msgs(user_token):
             timeout=(3, 6)
         )
     except Exception as e:
-        with open('get_user_sent_messages_tries.txt', 'a') as gusm_object:
+        with open('/negassa/test.sms.et_errors/get_user_sent_messages_tries.txt', 'a') as gusm_object:
             gusm_object.write(str(e) + "\n\n")
     else:
         # it counts the number of unique ids' are in the response meaning
