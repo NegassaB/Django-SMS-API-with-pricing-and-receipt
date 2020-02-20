@@ -8,7 +8,7 @@ from datetime import datetime, timezone, timedelta
 # used for parsing the datetime object from the json response recieved from sms messages
 from dateutil.parser import parse
 
-base_url = "http://localhost:8055/"
+base_url = "http://test.sms.et/"
 
 """
 This file is responsible for providing a checking mechanism to the ui.views file.
