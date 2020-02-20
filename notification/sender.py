@@ -9,13 +9,13 @@ import json
 from rest_framework.response import Response
 from rest_framework import status
 
-base_url = "http://localhost:5000/"
+base_url_sdp = "https://api.sms.et/api/sendsms/"
 
 def sender(sms_data):
     """
     The actual function that accesses the server and sends the sms.
     """
-    sending_url = base_url + "api/sendsms/"
+    sending_url = base_url_sdp + "api/sendsms/"
     sending_headers = {"content-type": "application/x-www-form-urlencoded"}
 
     response = requests.Response()
