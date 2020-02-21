@@ -9,7 +9,7 @@ import json
 from rest_framework.response import Response
 from rest_framework import status
 
-base_url_sdp = "https://api.sms.et/api/sendsms/"
+base_url_sdp = "https://10.8.0.86:5000/api/sendsms/"
 
 def sender(sms_data):
     """
