@@ -15,7 +15,7 @@ describe the entire urlpattern here.
 app_name = "commons"
 
 router = DefaultRouter()
-#router.register('smsusers', SMSUserViewSet, base_name="smsusers")
+router.register('smsusers', SMSUserViewSet, base_name="smsusers")
 
 urlpatterns = [
     # for all the types of sms users, presented as_view()
@@ -31,7 +31,7 @@ urlpatterns = [
     # for updating a specific smsuser, presented as_view()
     path('smsusers/update/<int:pk>/', SMSUserUpdate.as_view(), name="update_sms_user"),
     # for displaying all the instances of smsuser, presented as_view()
-     path("smsusers/", SMSUserViewSet, name="view_all_sms_users"),
+    #  path("smsusers/", SMSUserViewSet, name="view_all_sms_users"),
     # for loging in using the LoginView
     path('login/', LoginView.as_view(), name="login"),
     # for logining in a user by using DRF to obtain an authorization token
