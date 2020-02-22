@@ -152,12 +152,7 @@ def calculate_the_last_5minutes_sent(sent_date):
     minutes5_before = current_time - timedelta(minutes=5)
     queryset = SMSMessages.objects.filter(sent_date__gte=minutes5_before)
     if queryset:
-        print("got here")
         for data in queryset:
             return True
         else:
             return False
-
-    # if sent_date.minute <= 
-    # if current_time.minute is sent_date.minute:
-    #     print("got it")
