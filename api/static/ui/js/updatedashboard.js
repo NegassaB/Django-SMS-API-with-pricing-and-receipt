@@ -7,7 +7,7 @@ function updateData() {
 }
 
 function getData(){
-    url = "http://localhost:8055/ui/dashboard_update/";
+    url = "http://test.sms.et/ui/dashboard_update/";
     $.post(
         url,
         {

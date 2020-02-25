@@ -169,7 +169,7 @@ REST_FRAMEWORK = {
 # SECURE_HSTS_PRELOAD = True
 
 # used to make sure that server prevent the browser from identifying content types incorrectly.
-# SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # used to make sure that server activate the browser's XSS filtering and help prevent XSS attacks.
 # SECURE_BROWSER_XSS_FILTER = True
