@@ -150,7 +150,10 @@ REST_FRAMEWORK = {
         ),
     'DEFAULT_PERMISSION_CLASSES': (
             'rest_framework.permissions.IsAuthenticated',
-        )
+        ),
+    'DEFAULT_RENDERER_CLASSES': (
+            'rest_framework.renderers.JSONRenderer',
+        ),
     }
 
 # used to avoid transmitting CSRF cookie over HTTP accidentally.
@@ -169,7 +172,7 @@ REST_FRAMEWORK = {
 # SECURE_HSTS_PRELOAD = True
 
 # used to make sure that server prevent the browser from identifying content types incorrectly.
-# SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # used to make sure that server activate the browser's XSS filtering and help prevent XSS attacks.
 # SECURE_BROWSER_XSS_FILTER = True
