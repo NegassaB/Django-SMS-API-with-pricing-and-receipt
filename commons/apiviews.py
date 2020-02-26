@@ -21,7 +21,7 @@ class SMSUserViewSet(viewsets.ModelViewSet):
     It sub-classes the ModelViewSet of the rest_framework.
     """
     authentication_classes = ()
-    permission_classes = ()
+    permission_classes = (permissions.IsAdminUser,)
     queryset = SMSUser.objects.all()
     serializer_class = SMSUserSerializer
 
