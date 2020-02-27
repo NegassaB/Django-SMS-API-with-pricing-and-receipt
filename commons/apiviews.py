@@ -78,7 +78,7 @@ class SMSUserCreate(generics.CreateAPIView):
     class from global authentication scheme.
     """
     authentication_classes = ()
-    permission_classes = ()
+    permission_classes = (permissions.IsAdminUser,)
     serializer_class = SMSUserSerializer
 
 
@@ -87,7 +87,7 @@ class SMSUserView(generics.ListAPIView):
     This class is responsible for creating a view for the SMSUser model, aka display all the smsuser objects created.
     """
     authentication_classes = ()
-    permission_classes = ()
+    permission_classes = (permissions.IsAdminUser,)
     serializer_class = SMSUserSerializer
 
 
