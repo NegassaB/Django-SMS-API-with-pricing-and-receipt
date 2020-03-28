@@ -28,7 +28,7 @@ Pyphen==0.9.5
 python-dateutil==2.8.1
 pytz==2019.2
 PyYAML==5.1.2
-requests==2.22.0
+requests==2.23.0
 rope==0.14.0
 simplejson==3.16.0
 six==1.12.0
