@@ -10,7 +10,11 @@ coreapi==2.3.3
 coreschema==0.0.4
 cssselect2==0.2.2
 defusedxml==0.6.0
+<<<<<<< HEAD
+Django==2.2.5
+=======
 Django==2.2.11
+>>>>>>> master
 django-environ==0.4.5
 django-rest-swagger==2.2.0
 djangorestframework==3.10.3
