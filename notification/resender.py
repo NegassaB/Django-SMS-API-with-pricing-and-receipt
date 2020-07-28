@@ -40,6 +40,7 @@ def resender(date_args):
     datat = {"number": s.sms_number_to, "msg_text": s.sms_content}
     sys.stdout.write("attempting to send...")
     try:
+      time.sleep(5)
       flag, resp = sender(datat)
       if flag:
         sys.stdout.write("WWWWOOOOOOHOOOOO")
@@ -52,10 +53,6 @@ def resender(date_args):
       sys.stdout.write("{}{}".format("exception,", e))
     finally:
       sys.stdout.write("finished")
-  time.sleep(5)
-
-t1 = Thread(target=resender, args=(date_args), daemon=True)
-t1.start()
 
 
 if __name__ == "__main__":
