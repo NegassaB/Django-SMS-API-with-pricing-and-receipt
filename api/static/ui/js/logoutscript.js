@@ -1,5 +1,5 @@
 $("#logout_button").click(function(){
-    url = "http://test.sms.et/ui/logout_request/"
+    url = "http://api-et.sms.et/ui/logout_request/"
     $.get(
         url,
         function(data){

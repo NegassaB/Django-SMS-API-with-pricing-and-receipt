@@ -24,15 +24,17 @@ def sender(sms_data):
             sending_url,
             data=sms_data,
             headers=sending_headers,
-            timeout=(3, 6)
+            timeout=(2, 5)
         )
         response.raise_for_status()
+        time.sleep(5)
         # TODO: log all responses from sms_server here and send your own responses to user
     except Exception as e:
         # TODO: find a better thing to do with the exception
         # perhaps a log file, like the below one
-        with open('sms_sending_errors_output.txt', 'a') as response_obejcts:
-            response_obejcts.write(str(e) + "\n")
+        #print(str(e))
+        #with open('sms_sending_errors_output.txt', 'a') as response_obejcts:
+         #   response_obejcts.write(str(e) + "\n")
         return False, response
     else:
         return True, response

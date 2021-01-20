@@ -89,8 +89,9 @@ class SMSView(APIView):
             # used for the instance, find a better name
             sms_object = sms_messages_serializer.save()
         else:
-            with open('sms_sending_errors_notification_serializer.txt', 'a') as notification_resp_obj:
-                notification_resp_obj.write(str(sms_messages_serializer.errors) + "\t" + str(datetime.datetime.now()))
+            print("{} -- {}".format(sms_messages_serializer.errors, datetime.datetime.now()))
+            #with open('sms_sending_errors_notification_serializer.txt', 'a') as notification_resp_obj:
+            #    notification_resp_obj.write(str(sms_messages_serializer.errors) + "\t" + str(datetime.datetime.now()))
             data_to_send = None
 
         # TODO refactor this into it's own function
@@ -99,6 +100,7 @@ class SMSView(APIView):
         while max_retry < 3:
             max_retry += 1
             status_flag, status_response = sender(data_to_send)
+            #print(f"--response from sender -- {status_response.text}")
 
             if not status_flag:
                 # find something better to do with this failure and no not save it to a text file on server
@@ -106,9 +108,10 @@ class SMSView(APIView):
                     data={
                         "status": "sms not sent"
                     },
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
                     content_type="application/json"
                 )
+                print(resp.data)
                 # with open('sms_sending_errors_notification_sender_resp.txt', 'a') as notification_sender_resp_obj:
                 #     notification_sender_resp_obj.write(str(status_flag) + "\t" + str(status_response) + "\t" + str(datetime.datetime.now()))
             else:
@@ -123,19 +126,20 @@ class SMSView(APIView):
                 )
                 resp = Response(
                     data={
-                        "status": "sms successfully sent."
+                        "status": "successfully sent"
                     },
-                    headers=status_response.headers,
-                    status=status_response.status_code,
+                    status=status.HTTP_201_CREATED,
                     content_type="application/json"
                 )
+                print(resp.data)
                 return resp
         else:
             resp = Response(
                 data={
                     "error": "unable to send sms"
                 },
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
                 content_type="application/json"
             )
+            print(resp.data)
             return resp
