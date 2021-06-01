@@ -42,8 +42,8 @@ six==1.14.0
 sqlparse==0.3.0
 tinycss2==1.0.2
 tornado==6.0.4
+upgrade-requirements==1.7.0
 uritemplate==3.0.0
 urllib3==1.25.5
-WeasyPrint==50
 webencodings==0.5.1
 

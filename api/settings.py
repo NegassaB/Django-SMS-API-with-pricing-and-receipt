@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     # my own
     'commons',
     'notification',
-    'ui',
 ]
 
 MIDDLEWARE = [
@@ -134,7 +133,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/static/commons/'
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
