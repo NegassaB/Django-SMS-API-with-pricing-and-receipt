@@ -9,13 +9,13 @@ import json
 from rest_framework.response import Response
 from rest_framework import status
 
-base_url = "http://localhost:5000/"
+base_url_sdp = "http://10.8.0.86:5000/"
 
 def sender(sms_data):
     """
     The actual function that accesses the server and sends the sms.
     """
-    sending_url = base_url + "api/sendsms/"
+    sending_url = base_url_sdp + "api/sendsms/"
     sending_headers = {"content-type": "application/x-www-form-urlencoded"}
 
     response = requests.Response()
@@ -24,7 +24,7 @@ def sender(sms_data):
             sending_url,
             data=sms_data,
             headers=sending_headers,
-            timeout=(7, 14),
+            timeout=(3, 6)
         )
         response.raise_for_status()
         # TODO: log all responses from sms_server here and send your own responses to user
