@@ -60,6 +60,8 @@ class SMSView(APIView):
                 content_type="application/json"
             )
 
+    @api_view(["POST"])
+    @renderer_classes([JSONRenderer])
     def post(self, request):
         """
         This method is used to create an instance of the SMSMessages indirectly by using the SMSMessagesSerializer.
@@ -138,4 +140,4 @@ class SMSView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 content_type="application/json"
             )
-            return resp
+            return resp.render()

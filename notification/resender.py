@@ -33,26 +33,26 @@ def resender(date_args):
   to and search.
   '''
 
-  timedif = datetime.now() - timedelta(days=args.day_diff)
-  timedif = timedif.date()
-  queryset = SMSMessages.objects.filter(delivery_status="False", sent_date__gte=timedif)
+  #timedif = datetime.now() - timedelta(days=date_args)
+  #timedif = timedif.date()
+  #queryset = SMSMessages.objects.filter(delivery_status=False, sent_date__gte=timedif)
+  queryset = SMSMessages.objects.filter(delivery_status=False, sent_date__contains=datetime.now().date())
   for s in queryset:
     datat = {"number": s.sms_number_to, "msg_text": s.sms_content}
-    sys.stdout.write("attempting to send...")
+    sys.stdout.write("attempting to send...\n")
     try:
-      time.sleep(5)
       flag, resp = sender(datat)
       if flag:
-        sys.stdout.write("WWWWOOOOOOHOOOOO")
+        sys.stdout.write("WWWWOOOOOOHOOOOO\n")
         s.delivery_status = "True"
         s.save()
-        sys.stdout.write("db updated")
+        sys.stdout.write("db updated\n")
       else:
-        sys.stdout.write("FUUUUUCKK")
+        sys.stdout.write("FUUUUUCKK\n")
     except Exception as e:
       sys.stdout.write("{}{}".format("exception,", e))
     finally:
-      sys.stdout.write("finished")
+      sys.stdout.write("finished\n")
 
 
 if __name__ == "__main__":

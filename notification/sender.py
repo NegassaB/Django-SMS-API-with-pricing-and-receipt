@@ -24,7 +24,7 @@ def sender(sms_data):
             sending_url,
             data=sms_data,
             headers=sending_headers,
-            timeout=(3, 6),
+            timeout=(7, 14),
         )
         response.raise_for_status()
         # TODO: log all responses from sms_server here and send your own responses to user
