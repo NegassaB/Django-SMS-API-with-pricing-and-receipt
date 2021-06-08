@@ -5,6 +5,8 @@ This file is responsible for generating the api views for the notification app.
 from rest_framework import generics, status, viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.contrib.auth import authenticate
 
@@ -143,9 +145,5 @@ class SMSView(APIView):
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
                 content_type="application/json"
             )
-<<<<<<< HEAD
             print(resp.data)
             return resp
-=======
-            return resp.render()
->>>>>>> 400e7f12bda415bb9ea31e0959b4c786c29abc20
