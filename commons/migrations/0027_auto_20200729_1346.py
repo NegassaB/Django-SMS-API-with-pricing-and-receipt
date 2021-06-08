@@ -8,7 +8,8 @@ from django.utils.timezone import utc
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('commons', '0026_invoice_invoice_created'),
+        ('commons', '0001_initial'),
+        #('commons', '0026_invoice_invoice_created'),
     ]
 
     operations = [

@@ -1,0 +1,25 @@
+{% load static %}
+{%include 'ui/includes/header.html' %}
+<body class="text-center" style="background-color: #f5f5f5;">
+    {%include 'ui/includes/navbaritems.html' %}
+    <div class="container">
+        {%include 'ui/includes/messaging.html' %}
+        <br>
+        {% block content %}
+        
+        {% endblock %}
+    </div>
+    <!-- jquery -->
+    <script src="{% static 'ui/js/jquery-3.4.1.min.js' %}"></script>
+    <!-- popper js -->
+    <script src="{% static 'ui/js/popper.min.js' %}"></script>
+    <!-- bootstrap4 js -->
+    <script src="{% static 'ui/js/bootstrap.min.js' %}"></script>
+    <!-- autoclosealert js -->
+    <script src="{%static 'ui/js/autoclosealerts.js' %}"></script>
+    <!-- logoutscript js -->
+    <script src="{% static 'ui/js/logoutscript.js' %}"></script>
+    {% block scripts %}
+    {% endblock %}
+    {% include 'ui/includes/footeritems.html' %}
+</body>

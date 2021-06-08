@@ -7,7 +7,7 @@ function updateData() {
 }
 
 function getData(){
-    url = "http://test.sms.et/ui/dashboard_update/";
+    url = "http://api-et.sms.et/ui/dashboard_update/";
     $.post(
         url,
         {
