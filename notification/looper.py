@@ -10,7 +10,7 @@ def looper(time_diff):
     queryset = SMSMessages.objects.filter(delivery_status=False, sent_date__date=time_diff)
     if queryset.count() != 0:
         print("sending from loop\n")
-        time.sleep(2)
+        time.sleep(5)
         resender(1)
     else:
         time.sleep(1)
@@ -21,6 +21,7 @@ def looper(time_diff):
 def kicker():
     while True:
         x = datetime.now().date()
+        time.sleep(2)
         looper(x)
         if datetime.now().date() != x:
             print("\n\trestarting script")

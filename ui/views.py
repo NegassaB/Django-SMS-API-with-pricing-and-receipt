@@ -21,7 +21,7 @@ This file is responsible for the entire ui view of the web app.
 all user interface/experience is done and used here.
 """
 
-base_url = "http://test.sms.et/"
+base_url = "http://api-et.sms.et/"
 
 def homepage(request):
     return render(request=request, template_name="ui/index.html")

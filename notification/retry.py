@@ -9,25 +9,15 @@ from django.db import models
 from datetime import timedelta
 from django.utils import timezone
 import json
+from requests import Response
+from notification.sender import *
 
 """
 It retries all the sms that have failed to be sent by filter all the created sms according
 to their delivery_status (which would be False if it fails) and how long has it been since
 it was created (anything younger than an hour is rejected)
 """
-time_parameter = timezone.now(timezone=utc) - timedelta(hours=1)
-queryset = SMSMessages.objects.filter(send_date__lt=time_parameter, delivery_status=False)
 
-for sms_data in queryset:
-    data_to_send = {
-        "number": sms_data.sms_number_to,
-        "msg_text": sms_data.sms_content
-    }
-
-    send_utility(json.dumps(data_to_send))
-
-
-# TODO refactor this into it's own function
 def send_utility(sms_data_to_send):
     max_retry = 0
     resp = Response()
@@ -67,3 +57,18 @@ def send_utility(sms_data_to_send):
             content_type="application/json"
         )
         return resp
+
+time_parameter = timezone.now() - timedelta(hours=1)
+queryset = SMSMessages.objects.filter(sent_date__lt=time_parameter, delivery_status=False)
+
+for sms_data in queryset:
+    data_to_send = {
+        "number": sms_data.sms_number_to,
+        "msg_text": sms_data.sms_content
+    }
+
+    send_utility(json.dumps(data_to_send))
+
+
+# TODO refactor this into it's own function
+
