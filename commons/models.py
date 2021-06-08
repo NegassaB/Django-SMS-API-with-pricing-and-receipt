@@ -4,6 +4,8 @@ from rest_framework.authtoken.models import Token
 
 from django.core.validators import RegexValidator
 
+from django.utils import timezone
+
 # Create your models here.
 
 
@@ -18,8 +20,8 @@ class SMSUser(AbstractUser):
     # since an Integer field will not let us use 0 and have a max_length, the validator below will
     # kick in and make sure only number's are put in here.
     company_tin = models.CharField(max_length=10, default=1, validators=[RegexValidator(r'^\d{1, 10}$')])
-    # TODO right before production, change this to False as to not fuck yourself
-    company_status = models.BooleanField(default=True)
+    company_status = models.BooleanField(default=False)
+    company_phone = models.CharField(max_length=14, default="000000")
 
     class Meta:
         verbose_name_plural = "SMSUsers"
@@ -60,7 +62,7 @@ class SMSMessages(models.Model):
     sms_number_to = models.CharField(max_length=14)
     sms_content = models.CharField(max_length=160)
     sending_user = models.ForeignKey("SMSUser", on_delete=models.PROTECT, related_name="user_that_sent")
-    sent_date = models.DateTimeField(auto_now=True)
+    sent_date = models.DateTimeField(timezone.now())
     delivery_status = models.BooleanField(default=False)
 
     class Meta:
