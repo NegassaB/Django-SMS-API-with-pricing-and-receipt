@@ -16,7 +16,7 @@ def sender(sms_data):
     The actual function that accesses the server and sends the sms.
     """
     sending_url = base_url_sdp + "api/sendsms/"
-    sending_headers = {"content-type": "application/x-www-form-urlencoded"}
+    sending_headers = {"content-type": "application/json"}
 
     response = requests.Response()
     try:
@@ -24,17 +24,15 @@ def sender(sms_data):
             sending_url,
             data=sms_data,
             headers=sending_headers,
-            timeout=(2, 5)
+            timeout=(3, 6)
         )
         response.raise_for_status()
-        time.sleep(5)
         # TODO: log all responses from sms_server here and send your own responses to user
     except Exception as e:
         # TODO: find a better thing to do with the exception
         # perhaps a log file, like the below one
-        #print(str(e))
-        #with open('sms_sending_errors_output.txt', 'a') as response_obejcts:
-         #   response_obejcts.write(str(e) + "\n")
+        print(response)
         return False, response
     else:
+        print(response)
         return True, response
