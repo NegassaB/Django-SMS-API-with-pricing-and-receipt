@@ -16,7 +16,7 @@ def sender(sms_data):
     The actual function that accesses the server and sends the sms.
     """
     sending_url = base_url_sdp + "api/sendsms/"
-    sending_headers = {"content-type": "application/json"}
+    sending_headers = {"content-type": "application/x-www-form-urlencoded"}
 
     response = requests.Response()
     try:
@@ -31,8 +31,9 @@ def sender(sms_data):
     except Exception as e:
         # TODO: find a better thing to do with the exception
         # perhaps a log file, like the below one
-        print(response)
+        # with open('sms_sending_errors_output.txt', 'a') as response_obejcts:
+        #     response_obejcts.write(str(e) + "\n")
+        print(str(e))
         return False, response
     else:
-        print(response)
         return True, response

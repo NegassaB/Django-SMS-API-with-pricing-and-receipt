@@ -92,8 +92,7 @@ class SMSView(APIView):
             # used for the instance, find a better name
             sms_object = sms_messages_serializer.save()
         else:
-            with open('sms_sending_errors_notification_serializer.txt', 'a') as notification_resp_obj:
-                notification_resp_obj.write(str(sms_messages_serializer.errors) + "\t" + str(datetime.datetime.now()))
+            print(str(sms_messages_serializer.errors))
             data_to_send = None
 
         # TODO refactor this into it's own function
