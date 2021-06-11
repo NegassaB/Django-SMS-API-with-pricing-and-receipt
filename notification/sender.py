@@ -31,8 +31,9 @@ def sender(sms_data):
     except Exception as e:
         # TODO: find a better thing to do with the exception
         # perhaps a log file, like the below one
-        with open('sms_sending_errors_output.txt', 'a') as response_obejcts:
-            response_obejcts.write(str(e) + "\n")
+        # with open('sms_sending_errors_output.txt', 'a') as response_obejcts:
+        #     response_obejcts.write(str(e) + "\n")
+        print(str(e))
         return False, response
     else:
         return True, response
