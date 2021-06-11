@@ -16,7 +16,7 @@ import json
 
 from commons.models import SMSMessages
 from commons.serializers import SMSMessagesSerializer
-from notification.sender import sender
+from notification.sender import place_in_queue
 
 
 class SMSMessagesView(generics.ListCreateAPIView):
@@ -99,10 +99,9 @@ class SMSView(APIView):
 
         resp = Response()
 
-        status_flag, status_response = sender(data_to_send)
+        status_flag, status_response = place_in_queue(data_to_send)
 
         if not status_flag:
-            # find something better to do with this failure and no not save it to a text file on server
             resp = Response(
                 data={
                     "status": "sms not sent"
@@ -110,10 +109,8 @@ class SMSView(APIView):
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
                 content_type="application/json"
             )
-            print(resp)
+            print(f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text}")
             return resp
-            # with open('sms_sending_errors_notification_sender_resp.txt', 'a') as notification_sender_resp_obj:
-            #     notification_sender_resp_obj.write(str(status_flag) + "\t" + str(status_response) + "\t" + str(datetime.datetime.now()))
         else:
             # the update method defined in the SMSMessagesSerializer class
             # needs an instance to run with, so that's what has been changed.
@@ -131,5 +128,5 @@ class SMSView(APIView):
                 status=status.HTTP_201_CREATED,
                 content_type="application/json"
             )
-            print(resp)
+            print(f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text}")
             return resp
