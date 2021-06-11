@@ -1,0 +1,16 @@
+the way our repos are setup are:
+
+api.sms.et uses the 1st repo created, i.e. github.com/api.sms.et. All edits,
+modifications and updates will be pushed to that repo. Once you decide that
+all is well you will merge those updates with local/master then push that
+origin/master.
+
+the local/master will also be merged with local/production and that will be
+push to the 2nd repo's local_jug branch, i.e.
+github.com/api.sms.et_production. Once you decide all is dandy with this
+branch you'll merge it, on remote, with the master branch of
+github.com/api.sms.et_production.
+
+You'll then proceed to merge that with remote_jug and pull remote_jug to the
+server git, if all is well on server and it works as expected or if you've
+made any modifications, you'll push that to origin/remote_jug. If all is dandy with this push you'll merge, again on remote, with origin/master which you'll then proceed to merge to local_jug and pull that to the production branch of api.sms.et.
