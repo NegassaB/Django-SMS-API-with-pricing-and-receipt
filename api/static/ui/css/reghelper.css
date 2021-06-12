@@ -1,8 +1,0 @@
-.underlay {
-    position: absolute;
-    min-height: 100%;
-    min-width: 100%;
-    left: 0;
-    top: 25em;
-    z-index: -100;
-}
