@@ -9,11 +9,6 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-try:
-    from local_settings import *
-except ImportError as e:
-    pass
-
 import os
 import environ
 
@@ -137,7 +132,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static'
+STATIC_URL = '/static/'
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
@@ -188,3 +183,8 @@ X_FRAME_OPTIONS = 'DENY'
 
 # enables persistent database connections as to have a nice speed-up when connecting to the database accounts for a significant part of the request processing time.
 CONN_MAX_AGE = None
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
