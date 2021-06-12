@@ -37,7 +37,7 @@ def sender(sms_data):
 
     response = requests.Response()
     try:
-        time.sleep(1)
+        time.sleep(2)
         response = requests.post(
             sending_url,
             data=sms_data,
