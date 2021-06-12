@@ -9,6 +9,10 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
+try:
+    from local_settings import *
+except ImportError as e:
+    pass
 
 import os
 import environ
