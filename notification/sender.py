@@ -5,11 +5,28 @@ gets a response back. It uses the requests library.
 import requests
 import time
 import json
+from queue import Queue
 
 from rest_framework.response import Response
 from rest_framework import status
 
 base_url_sdp = "http://10.8.0.86:5000/"
+
+sms_queue = Queue()
+
+
+def place_in_queue(sms_data):
+    """
+    place_in_queue: used to place the sms that will be sent into a queue and
+                    then it calls sender() using the data.
+
+    Args:
+        sms_data (Dict): a dict object recevied from apiviews.SMSView.post
+    """
+    sms_queue.put(sms_data)
+    time.sleep(0.5)
+    return sender(sms_queue.get())
+
 
 def sender(sms_data):
     """
@@ -20,6 +37,7 @@ def sender(sms_data):
 
     response = requests.Response()
     try:
+        time.sleep(2)
         response = requests.post(
             sending_url,
             data=sms_data,
@@ -27,12 +45,8 @@ def sender(sms_data):
             timeout=(3, 6)
         )
         response.raise_for_status()
-        # TODO: log all responses from sms_server here and send your own responses to user
     except Exception as e:
-        # TODO: find a better thing to do with the exception
-        # perhaps a log file, like the below one
-        with open('sms_sending_errors_output.txt', 'a') as response_obejcts:
-            response_obejcts.write(str(e) + "\n")
+        print(str(e))
         return False, response
     else:
         return True, response

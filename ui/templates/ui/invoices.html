@@ -1,0 +1,21 @@
+{% extends 'ui/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <h3 class="text-center h3">List of Invoices to your company</h3>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <ul>
+                {% for single_invoice in list_invoices %}
+                <li><a href="{{ single_invoice }}">{{ single_invoice }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

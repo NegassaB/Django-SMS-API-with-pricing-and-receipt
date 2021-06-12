@@ -38,7 +38,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 # DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "test.sms.et", ]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "api-et.sms.et", ]
 
 
 # Application definition
@@ -137,7 +137,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/commons/'
+STATIC_URL = '/static'
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
@@ -160,31 +160,31 @@ REST_FRAMEWORK = {
     }
 
 # used to avoid transmitting CSRF cookie over HTTP accidentally.
-# CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 # used to avoid transmitting SESSION cookie over HTTP accidentally.
-# SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 # used to...IDK, motherfucking manage.py check --deploy said to do so
-# SECURE_HSTS_SECONDS = 346000
+SECURE_HSTS_SECONDS = 346000
 
 # used to tell re-route all sub-domains to ssl.
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 # used to submit the site to the browser preload list.
-# SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_PRELOAD = True
 
 # used to make sure that server prevent the browser from identifying content types incorrectly.
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # used to make sure that server activate the browser's XSS filtering and help prevent XSS attacks.
-# SECURE_BROWSER_XSS_FILTER = True
+SECURE_BROWSER_XSS_FILTER = True
 
 # used to make sure that server redirects all connections to HTTPS.
-# SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = True
 
 # used to prevent clickjacking (redirecting user via an iframe or hidden frame).
 X_FRAME_OPTIONS = 'DENY'
 
 # enables persistent database connections as to have a nice speed-up when connecting to the database accounts for a significant part of the request processing time.
-# CONN_MAX_AGE = None
+CONN_MAX_AGE = None
