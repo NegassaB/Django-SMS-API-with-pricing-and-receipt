@@ -95,16 +95,16 @@ class InvoiceSerialzer(serializers.ModelSerializer):
     class Meta:
         model = Invoice
         fields = '__all__'
-    
-    
+
+
     def create(self, validated_data):
         """
         The method used to create a new Invoice, (all this is based on the djangoapibook process).
         """
         user_invoice = Invoice(invoice_to=validated_data['username'])
         return user_invoice
-    
-    
+
+
     def update(self, instance, validated_data):
         """
         This method is used to update an instance of the Invoice payment_status attribute.

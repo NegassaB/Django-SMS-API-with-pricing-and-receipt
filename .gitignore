@@ -92,6 +92,13 @@ env.bak/
 venv.bak/
 api_env/
 
+# telegram bot env
+.bot_env.ini
+
+# telethon session db
+*.session
+*.session*
+
 # Spyder project settings
 .spyderproject
 .spyproject

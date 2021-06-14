@@ -86,7 +86,6 @@ class Invoice(models.Model):
 
     class Meta:
         verbose_name_plural = "Invoices"
-    
 
     def __str__(self):
         return str(self.invoice_to) + "_" + str(self.pk)

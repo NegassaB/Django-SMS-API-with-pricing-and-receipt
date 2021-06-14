@@ -10,6 +10,8 @@ from queue import Queue
 from rest_framework.response import Response
 from rest_framework import status
 
+# from notification.send_via_telegram import send_to_user_telegram
+
 base_url_sdp = "http://10.8.0.86:5000/"
 
 sms_queue = Queue()
@@ -34,6 +36,8 @@ def sender(sms_data):
     """
     sending_url = base_url_sdp + "api/sendsms/"
     sending_headers = {"content-type": "application/x-www-form-urlencoded"}
+
+    # send_to_user_telegram(sms_data)
 
     response = requests.Response()
     try:
