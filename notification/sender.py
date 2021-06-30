@@ -25,6 +25,7 @@ def place_in_queue(sms_data):
         sms_data (Dict): a dict object recevied from apiviews.SMSView.post
     """
     sms_queue.put(sms_data)
+    time.sleep(0.5)
     return sender(sms_queue.get())
 
 
@@ -50,11 +51,9 @@ def sender(sms_data):
     sending_url = base_url_sdp + "api/sendsms/"
     sending_headers = {"content-type": "application/x-www-form-urlencoded"}
 
-    telegram_sender(sms_data)
-
     response = requests.Response()
     try:
-        time.sleep(2)
+        time.sleep(3)
         response = requests.post(
             sending_url,
             data=sms_data,
