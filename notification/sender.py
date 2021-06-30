@@ -10,6 +10,7 @@ from queue import Queue
 from rest_framework.response import Response
 from rest_framework import status
 
+
 base_url_sdp = "http://10.8.0.86:5000/"
 
 sms_queue = Queue()
@@ -24,8 +25,22 @@ def place_in_queue(sms_data):
         sms_data (Dict): a dict object recevied from apiviews.SMSView.post
     """
     sms_queue.put(sms_data)
-    time.sleep(0.5)
     return sender(sms_queue.get())
+
+
+def telegram_sender(sms_data):
+    telegram_sms_data = {}
+    telegram_sms_data['number'] = sms_data.get('number')
+    telegram_sms_data['msg_txt'] = sms_data.get('msg_text')
+    try:
+        res = requests.post(
+            "http://gargarsa.sms.et/telegram_sender/",
+            data=json.dumps(telegram_sms_data),
+            headers={"accept": "application/json", "Content-Type": "application/json"}
+        )
+        res.raise_for_status()
+    except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError, requests.exceptions.ProxyError) as e:
+        print(f"from telegram_sender -- {e}")
 
 
 def sender(sms_data):
@@ -34,6 +49,8 @@ def sender(sms_data):
     """
     sending_url = base_url_sdp + "api/sendsms/"
     sending_headers = {"content-type": "application/x-www-form-urlencoded"}
+
+    telegram_sender(sms_data)
 
     response = requests.Response()
     try:
