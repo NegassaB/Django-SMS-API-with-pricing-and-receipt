@@ -16,7 +16,7 @@ import json
 
 from commons.models import SMSMessages
 from commons.serializers import SMSMessagesSerializer
-from notification.sender import place_in_queue
+from notification.sender import place_in_queue, telegram_sender
 
 
 class SMSMessagesView(generics.ListCreateAPIView):
@@ -100,6 +100,7 @@ class SMSView(APIView):
         resp = Response()
 
         status_flag, status_response = place_in_queue(data_to_send)
+        telegram_sender(data_to_send)
 
         if not status_flag:
             resp = Response(
