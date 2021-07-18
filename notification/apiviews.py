@@ -97,7 +97,7 @@ class SMSView(APIView):
             data_to_send = None
             resp = Response(
                 data={
-                    "status": f"{sms_messages_serializer.errors['sms_content']}"
+                    "status": f"{sms_messages_serializer.errors}"
                 },
                 status=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 content_type="application/json"
