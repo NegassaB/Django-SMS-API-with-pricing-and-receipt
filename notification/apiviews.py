@@ -97,7 +97,7 @@ class SMSView(APIView):
             data_to_send = None
             resp = Response(
                 data={
-                    "status": f"{sms_messages_serializer.errors}"
+                    "error": f"{sms_messages_serializer.errors}"
                 },
                 status=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 content_type="application/json"
@@ -113,7 +113,7 @@ class SMSView(APIView):
         if not status_flag:
             resp = Response(
                 data={
-                    "status": "sms not sent"
+                    "error": "sms not sent"
                 },
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
                 content_type="application/json"
