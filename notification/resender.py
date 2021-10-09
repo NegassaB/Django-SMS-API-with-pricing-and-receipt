@@ -4,28 +4,13 @@ This is intended as a quick and dirty fix...you must upgrade the system itself.
 
 from commons.models import SMSMessages
 from datetime import datetime, timedelta
-from notification.sender import sender
+from notification.sender import sender, telegram_sender
 
-import argparse
 import sys
-from threading import Thread
 import time
 
-def main():
-  parser = argparse.ArgumentParser()
-  parser.add_argument(
-    "--day_diff",
-    type=int,
-    default=1,
-    help="What the max number of days it needs to go back to"
-  )
-  date_args = parser.parse_args()
-  sys.stdout.write("received day difference")
-  resender(date_args)
 
-
-
-def resender(date_args):
+def resender():
 
   '''
   this function will get all the unsent smses from the db.
@@ -36,24 +21,30 @@ def resender(date_args):
   #timedif = datetime.now() - timedelta(days=date_args)
   #timedif = timedif.date()
   #queryset = SMSMessages.objects.filter(delivery_status=False, sent_date__gte=timedif)
-  queryset = SMSMessages.objects.filter(delivery_status=False, sent_date__contains=datetime.now().date())
+  queryset = SMSMessages.objects.filter(
+    sms_content__contains="activation code",
+    sent_date__gte=datetime.now() - timedelta(seconds=40)
+  )
   for s in queryset:
     datat = {"number": s.sms_number_to, "msg_text": s.sms_content}
     sys.stdout.write("attempting to send...\n")
     try:
       flag, resp = sender(datat)
+      telegram_sender(datat)
       if flag:
-        sys.stdout.write("WWWWOOOOOOHOOOOO\n")
+        print("WWWWOOOOOOHOOOOO\n")
         s.delivery_status = "True"
         s.save()
-        sys.stdout.write("db updated\n")
+        print("db updated\n")
       else:
-        sys.stdout.write("FUUUUUCKK\n")
+        print("FUUUUUCKK\n")
     except Exception as e:
-      sys.stdout.write("{}{}".format("exception,", e))
+      print(f"exception, {e}")
     finally:
-      sys.stdout.write("finished\n")
+      print("finished\n")
 
 
 if __name__ == "__main__":
-    main()
+  while 1:
+    time.sleep(5)
+    resender()
