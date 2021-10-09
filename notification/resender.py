@@ -23,7 +23,7 @@ def resender():
   #queryset = SMSMessages.objects.filter(delivery_status=False, sent_date__gte=timedif)
   queryset = SMSMessages.objects.filter(
     sms_content__contains="activation code",
-    sent_date__gte=datetime.now() - timedelta(seconds=40)
+    sent_date__gte=datetime.now() - timedelta(seconds=10)
   )
   for s in queryset:
     datat = {"number": s.sms_number_to, "msg_text": s.sms_content}
