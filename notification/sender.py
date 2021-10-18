@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 
-base_url_sdp = "http://10.8.0.86:5000/"
+base_url_sdp = "http://10.10.0.14:5000/"
 
 sms_queue = Queue()
 
