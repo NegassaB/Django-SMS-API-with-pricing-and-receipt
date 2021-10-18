@@ -71,6 +71,7 @@ class SMSView(APIView):
         times before it gives up and fails. Once that returns a True value the instance will be called, aka the object
         will be saved to the database, with a delivery_status value of True.
         """
+        resp = Response()
         sms_messages_serializer = SMSMessagesSerializer(
             data={
                 "sms_number_to": request.data.get("sms_number_to"),
@@ -94,10 +95,17 @@ class SMSView(APIView):
         else:
             print(str(sms_messages_serializer.errors))
             data_to_send = None
+            resp = Response(
+                data={
+                    "error": f"{sms_messages_serializer.errors}"
+                },
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                content_type="application/json"
+            )
+            print(f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text}")
+            return resp
 
         # TODO refactor this into it's own function
-
-        resp = Response()
 
         status_flag, status_response = place_in_queue(data_to_send)
         telegram_sender(data_to_send)
@@ -105,7 +113,7 @@ class SMSView(APIView):
         if not status_flag:
             resp = Response(
                 data={
-                    "status": "sms not sent"
+                    "error": "sms not sent"
                 },
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
                 content_type="application/json"
