@@ -13,6 +13,7 @@ from django.contrib.auth import authenticate
 import threading
 import datetime
 import json
+import time
 
 from commons.models import SMSMessages
 from commons.serializers import SMSMessagesSerializer
@@ -107,6 +108,7 @@ class SMSView(APIView):
 
         # TODO refactor this into it's own function
 
+        time.sleep(2)
         status_flag, status_response = place_in_queue(data_to_send)
         telegram_sender(data_to_send)
 
