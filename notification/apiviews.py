@@ -120,7 +120,7 @@ class SMSView(APIView):
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
                 content_type="application/json"
             )
-            print(f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text}")
+            print(f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text} -- {data_to_send['number']}")
             return resp
         else:
             # the update method defined in the SMSMessagesSerializer class
@@ -139,5 +139,5 @@ class SMSView(APIView):
                 status=status.HTTP_201_CREATED,
                 content_type="application/json"
             )
-            print(f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text}")
+            print(f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text} -- {data_to_send['number']}")
             return resp
