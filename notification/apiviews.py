@@ -2,36 +2,19 @@
 This file is responsible for generating the api views for the notification app.
 """
 
-from rest_framework import generics, status, viewsets, permissions
+from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.decorators import renderer_classes
 from rest_framework.renderers import JSONRenderer
 from rest_framework.pagination import PageNumberPagination
 
-from django.shortcuts import get_object_or_404, get_list_or_404
-from django.contrib.auth import authenticate
 
-import threading
 import datetime
-import json
 
 from commons.models import SMSMessages
 from commons.serializers import SMSMessagesSerializer
 from notification.sender import place_in_queue, telegram_sender
-
-
-class SMSMessagesView(generics.ListCreateAPIView):
-
-    """
-    This class is responsible for generating, and returning, the view for all created objects of the SMSMessages model.
-    It sub-classes the ListCreateAPIView class of the generics module.
-    """
-    queryset = SMSMessages.objects.all()
-    if not queryset:
-        Response(data={"{0} not found".format(queryset)}, status=404, content_type="application/json")
-
-    serializer_class = SMSMessagesSerializer
 
 
 class SMSView(APIView, PageNumberPagination):
