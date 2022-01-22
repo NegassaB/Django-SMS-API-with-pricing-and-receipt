@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
+from rest_framework.pagination import PageNumberPagination
+
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.contrib.auth import authenticate
 
@@ -32,7 +34,7 @@ class SMSMessagesView(generics.ListCreateAPIView):
     serializer_class = SMSMessagesSerializer
 
 
-class SMSView(APIView):
+class SMSView(APIView, PageNumberPagination):
     """
     This class is responsible for all the method operations of an sms. It provides implementations for the GET, POST, and OPTIONS methods.
     Each method provides it's own description.
@@ -42,17 +44,17 @@ class SMSView(APIView):
 
     def get(self, request):
         """
-        This method is used to GET all created instance of the SMSMessages class that are saved in the db.
+        This method is used to GET all created instance of the SMSMessages class that are saved in the db and if it's not None,
+        it will return a paginated Response object constructed using the PageNumberPagination class and it's methods.
         """
         queryset = SMSMessages.objects.filter(sending_user=request.user)
         while queryset:
-            return Response(
-                data={
-                    'result_objects': queryset.values()
-                    },
-                status=status.HTTP_200_OK,
-                content_type="application/json"
+            sms_serializer = SMSMessagesSerializer(
+                self.paginate_queryset(queryset, request),
+                many=True,
+                context={'request': request}
             )
+            return self.get_paginated_response(sms_serializer.data)
         else:
             return Response(
                 data={
@@ -67,9 +69,9 @@ class SMSView(APIView):
         """
         This method is used to create an instance of the SMSMessages indirectly by using the SMSMessagesSerializer.
         If that is valid it will be passed to the sender() method from the notification.sender module. The serializer
-        will be saved, aka the object will be saved to the database, and then the sender() is called. It will run three
-        times before it gives up and fails. Once that returns a True value the instance will be called, aka the object
-        will be saved to the database, with a delivery_status value of True.
+        will be saved, aka the object will be saved to the database, and then sender() is called. Once that returns
+        a True value the instance will be called, aka the object will be updated with a delivery_status value of True
+        and saved to the database.
         """
         resp = Response()
         sms_messages_serializer = SMSMessagesSerializer(
