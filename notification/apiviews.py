@@ -30,7 +30,7 @@ class SMSView(APIView, PageNumberPagination):
         This method is used to GET all created instance of the SMSMessages class that are saved in the db and if it's not None,
         it will return a paginated Response object constructed using the PageNumberPagination class and it's methods.
         """
-        queryset = SMSMessages.objects.filter(sending_user=request.user)
+        queryset = SMSMessages.objects.filter(sending_user=request.user).order_by('-id')
         while queryset:
             sms_serializer = SMSMessagesSerializer(
                 self.paginate_queryset(queryset, request),
