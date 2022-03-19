@@ -15,11 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from commons.views import homepage
 
 urlpatterns = [
-    # for the homepage
-    path('', homepage, name="homepage"),
     # for the admin page
     path('admin/', admin.site.urls),
     # for the commons app
