@@ -108,7 +108,7 @@ class SMSView(APIView):
 
         # TODO refactor this into it's own function
 
-        time.sleep(2)
+        time.sleep(1)
         status_flag, status_response = place_in_queue(data_to_send)
         telegram_sender(data_to_send)
 
