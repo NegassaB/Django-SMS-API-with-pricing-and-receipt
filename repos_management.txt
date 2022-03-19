@@ -14,3 +14,5 @@ github.com/api.sms.et_production.
 You'll then proceed to merge that with remote_jug and pull remote_jug to the
 server git, if all is well on server and it works as expected or if you've
 made any modifications, you'll push that to origin/remote_jug. If all is dandy with this push you'll merge, again on remote, with origin/master which you'll then proceed to merge to local_jug and pull that to the production branch of api.sms.et.
+
+use "git push origin HEAD:remote_jug"
