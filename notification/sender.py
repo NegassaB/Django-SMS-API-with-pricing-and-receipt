@@ -25,7 +25,7 @@ def place_in_queue(sms_data):
         sms_data (Dict): a dict object recevied from apiviews.SMSView.post
     """
     sms_queue.put(sms_data)
-    time.sleep(3)
+    time.sleep(1)
     return sender(sms_queue.get())
 
 
@@ -53,7 +53,7 @@ def sender(sms_data):
 
     response = requests.Response()
     try:
-        time.sleep(3)
+        time.sleep(2)
         response = requests.post(
             sending_url,
             data=sms_data,
