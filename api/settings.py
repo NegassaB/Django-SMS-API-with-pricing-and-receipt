@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     # frameworks
     'rest_framework',
     'rest_framework_swagger',
+    # 3rd parties,
+    'mod_wsgi.server',
     # authentication framework
     'rest_framework.authtoken',
     # my own
