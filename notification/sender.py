@@ -53,12 +53,11 @@ def sender(sms_data):
 
     response = requests.Response()
     try:
-        time.sleep(2)
         response = requests.post(
             sending_url,
             data=sms_data,
             headers=sending_headers,
-            timeout=(3, 6)
+            timeout=(4, 7)
         )
         response.raise_for_status()
     except Exception as e:
