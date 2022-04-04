@@ -78,7 +78,7 @@ class SMSView(APIView, PageNumberPagination):
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
                 content_type="application/json"
             )
-            SMSView.save_2_db(data_to_send, request.auth.user_id, True)
+            SMSView.save_2_db(data_to_send, request.auth.user_id, False)
             print(f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text} -- {data_to_send['number']}")
             return resp
         else:

@@ -42,6 +42,8 @@ def telegram_sender(sms_data):
         res.raise_for_status()
     except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError, requests.exceptions.ProxyError) as e:
         print(f"from telegram_sender -- {e}")
+    else:
+        print(res)
 
 
 def sender(sms_data):
