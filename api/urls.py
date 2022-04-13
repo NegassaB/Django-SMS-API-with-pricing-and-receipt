@@ -20,7 +20,7 @@ urlpatterns = [
     # for the admin page
     path('admin/', admin.site.urls),
     # for the commons app
-    #path('commons/', include('commons.urls')),
+    path('commons/', include('commons.urls')),
     # for the notification app
     path('notification/', include('notification.urls')),
     # Read the below N.B.
