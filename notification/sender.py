@@ -65,7 +65,7 @@ def sender(sms_data):
         response.raise_for_status()
     except Exception as e:
         print(str(e))
-        print(f"{response.status_code} -- {response.headers} -- {response.reason}")
+        print(f"RESPONSE {response.status_code} -- {response.headers} -- {response.reason}")
         return False, response
     else:
         return True, response
