@@ -33,7 +33,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 # DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "api-et.sms.et", ]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "api-et.sms.et", "dashboard.sms.et",]
 
 
 # Application definition
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     # 3rd parties,
     'mod_wsgi.server',
+    'corsheaders',
     # authentication framework
     'rest_framework.authtoken',
     # my own
@@ -60,6 +61,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -189,6 +191,15 @@ X_FRAME_OPTIONS = 'DENY'
 
 # enables persistent database connections as to have a nice speed-up when connecting to the database accounts for a significant part of the request processing time.
 CONN_MAX_AGE = None
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:*",
+    "http://127.0.0.1:*",
+    "http://dashboard.sms.et:*",
+    "https://dashboard.sms.et:*",
+    "http://api-et.sms.et:*",
+    "https://api-et.sms.et:*",
+]
 
 try:
     from .local_settings import *
