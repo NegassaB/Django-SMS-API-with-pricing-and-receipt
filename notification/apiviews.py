@@ -41,7 +41,7 @@ class SMSView(APIView, PageNumberPagination):
         else:
             return Response(
                 data={
-                    'result_objects': "no sms has been sent"
+                    'error': "no sms has been sent"
                 },
                 status=status.HTTP_404_NOT_FOUND,
                 content_type="application/json"
@@ -116,3 +116,27 @@ class SMSView(APIView, PageNumberPagination):
         else:
             print(str(sms_messages_serializer.errors))
 
+
+class SMSCountView(APIView):
+    serializer_class = SMSMessagesSerializer
+
+    def get(self, request):
+        val = datetime.datetime.now()
+        queryset = SMSMessages.objects.filter(sending_user=request.user, sent_date__year=val.year, sent_date__month=val.month)
+        total = queryset.count()
+        delivered = queryset.filter(delivery_status=True).count()
+        failed = queryset.filter(delivery_status=False).count()
+        while queryset:
+            return Response(
+                data={"total": total, "delivered": delivered, "failed": failed},
+                status=status.HTTP_200_OK,
+                content_type="application/json"
+            )
+        else:
+            return Response(
+                data={
+                    'error': "no sms has been sent"
+                },
+                status=status.HTTP_404_NOT_FOUND,
+                content_type="application/json"
+            )

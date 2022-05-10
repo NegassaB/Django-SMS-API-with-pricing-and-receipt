@@ -2,7 +2,8 @@ from django.urls import path
 from rest_framework.authtoken import views
 from rest_framework.routers import DefaultRouter
 
-from notification.apiviews import SMSView
+from notification.apiviews import SMSView, SMSCountView
+from notification.bulk_sender import BulkSender
 
 app_name = "notification"
 
@@ -12,4 +13,6 @@ router = DefaultRouter()
 urlpatterns = [
     path('sendsms/', SMSView.as_view(), name="send_sms"),
     path('viewsms/', SMSView.as_view(), name="view_sms"),
+    path('smscount/', SMSCountView.as_view(), name="sms_count"),
+    path('sendbulk/', BulkSender.as_view(), name="send_bulk")
 ]
