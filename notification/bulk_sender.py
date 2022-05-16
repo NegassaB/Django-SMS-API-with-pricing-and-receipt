@@ -1,5 +1,4 @@
-import json
-import requests
+import datetime
 import logging
 import time
 from threading import Thread
@@ -11,6 +10,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.decorators import renderer_classes
 
 from commons.serializers import SMSMessagesSerializer
+from notification.sender import place_in_queue, telegram_sender
 
 
 logging.basicConfig(
@@ -22,20 +22,26 @@ logger = logging.getLogger(__name__)
 
 
 class PhoneNumber():
+    # queue_to_send: "Queue[PhoneNumber]" = Queue()
+    queue_to_send = Queue()
+
     def __init__(self, phonenumber, content):
         self.phonenumber = phonenumber
         self.content = content
 
+    @classmethod
+    def insert_in_queue(self, numbers, bulk_sms_content):
+        for num in numbers:
+            PhoneNumber.queue_to_send.put(PhoneNumber(num, bulk_sms_content))
+
     def __repr__(self):
-        return str({
-            'type_of_obj': type(self),
-            'phonenumber': self.phonenumber,
-            'content': self.content,
-        })
-
-
-# queue_to_send: "Queue[PhoneNumber]" = Queue()
-queue_to_send = Queue()
+        return str(
+            {
+                'type_of_obj': type(self),
+                'phonenumber': self.phonenumber,
+                'content': self.content,
+            }
+        )
 
 
 class BulkSender(generics.CreateAPIView):
@@ -52,52 +58,61 @@ class BulkSender(generics.CreateAPIView):
             )
         t = Thread(target=self.send_bulk, args=(request,))
         t.start()
+
         return Response(
-            data={"success": "Request accepted, will be processed..."},
+            data={"success": "Request accepted, it will be processed and sent..."},
             status=status.HTTP_202_ACCEPTED,
             content_type="application/json"
         )
 
     def send_bulk(self, request):
-        bulk_details = request.data
-        auth_token = str(request.auth)
-        phone_nums = bulk_details.get("phone_nums")
-        bulk_content = bulk_details.get("bulk_content")
-        for num in phone_nums:
-            queue_to_send.put(PhoneNumber(num, bulk_content))
+        phone_nums = request.data.get("phone_nums")
+        bulk_content = request.data.get("bulk_content")
+        PhoneNumber.insert_in_queue(phone_nums, bulk_content)
 
-        while queue_to_send.empty() is False:
-            num_2_send = queue_to_send.get()
+        while PhoneNumber.queue_to_send.empty() is False:
+            num_2_send = PhoneNumber.queue_to_send.get()
             time.sleep(2)
-            return self.sender(num_2_send.phonenumber, num_2_send.content, auth_token)
+            data_to_send = {
+                "number": num_2_send.phonenumber,
+                "msg_text": num_2_send.content
+            }
+
+            status_flag, status_response = place_in_queue(data_to_send)
+            telegram_sender(data_to_send)
+
+            resp = self.generate_response(status_response)
+            BulkSender.save_2_db(data_to_send, request.auth.user_id, False)
+            print(f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text} -- {data_to_send['number']}")
+            return resp
         else:
             logger.info("COMPLETED SENDING SMS")
 
-    def sender(self, number, content, auth_token):
-        url = "http://127.0.0.1:8055/notification/sendsms/"
-        payload = json.dumps({"sms_number_to": f"{number}", "sms_content": f"{content}"})
-        headers = {
-            'content-type': "application/json",
-            'authorization': f"token {auth_token}"
-        }
-        try:
-            response = requests.post(
-                url,
-                data=payload,
-                headers=headers
+    def generate_response(status_response):
+        if status_response != 200:
+            return Response(
+                data={"error": "sms not sent"},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+                content_type="application/json"
             )
-        except Exception as e:
-            logger.error("exception in bulk_sender(), {}".format(e), exc_info=True)
-            print("something went wrong in bulk_sender(), check the log")
-            return Response(
-                    data={"error": f"sms sent to {number}"},
-                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
-                    content_type="application/json"
-                )
         else:
-            logger.info(f"from bulk_sender(), {response.text} -- {response.status_code}")
             return Response(
-                    data={"success": f"sms sent to {number}"},
-                    status=status.HTTP_202_ACCEPTED,
-                    content_type="application/json"
-                )
+                data={"status": "success"},
+                status=status.HTTP_201_CREATED,
+                content_type="application/json"
+            )
+
+    @classmethod
+    def save_2_db(self, data_2_send, user_id, update_sms=False):
+        sms_messages_serializer = SMSMessagesSerializer(
+            data={
+                "sms_number_to": data_2_send.get("number"),
+                "sms_content": data_2_send.get("msg_text"),
+                "sending_user": user_id,
+                "delivery_status": update_sms
+            }
+        )
+        if sms_messages_serializer.is_valid():
+            sms_messages_serializer.save()
+        else:
+            print(str(sms_messages_serializer.errors))
