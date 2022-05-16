@@ -121,22 +121,22 @@ class SMSCountView(APIView):
     serializer_class = SMSMessagesSerializer
 
     def get(self, request):
+        total, delivered, failed = self.count_queryset(request)
+        return Response(
+            data={"total": total, "delivered": delivered, "failed": failed},
+            status=status.HTTP_200_OK,
+            content_type="application/json"
+        )
+
+    def count_queryset(self, request):
         val = datetime.datetime.now()
         queryset = SMSMessages.objects.filter(sending_user=request.user, sent_date__year=val.year, sent_date__month=val.month)
-        total = queryset.count()
-        delivered = queryset.filter(delivery_status=True).count()
-        failed = queryset.filter(delivery_status=False).count()
-        while queryset:
-            return Response(
-                data={"total": total, "delivered": delivered, "failed": failed},
-                status=status.HTTP_200_OK,
-                content_type="application/json"
-            )
+        if queryset.exists():
+            delivered_queryset = queryset.filter(delivery_status=True)
+            failed_queryset = queryset.filter(delivery_status=False)
+            total = queryset.count()
+            delivered = delivered_queryset.count()
+            failed = failed_queryset.count()
+            return total, delivered, failed
         else:
-            return Response(
-                data={
-                    'error': "no sms has been sent"
-                },
-                status=status.HTTP_404_NOT_FOUND,
-                content_type="application/json"
-            )
+            return 0, 0, 0
