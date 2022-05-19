@@ -41,7 +41,7 @@ class SMSView(APIView, PageNumberPagination):
         else:
             return Response(
                 data={
-                    'result_objects': "no sms has been sent"
+                    'error': "no sms has been sent"
                 },
                 status=status.HTTP_404_NOT_FOUND,
                 content_type="application/json"
@@ -63,61 +63,80 @@ class SMSView(APIView, PageNumberPagination):
                 status=status.HTTP_401_UNAUTHORIZED,
                 content_type="application/json"
             )
-
-        data_to_send = {
-                "number": request.data.get("sms_number_to"),
-                "msg_text": request.data.get("sms_content")
-            }
-
-        status_flag, status_response = place_in_queue(data_to_send)
-        telegram_sender(data_to_send)
-
-        if not status_flag:
+        if not request.data.get("sms_number_to") or not request.data.get("sms_content"):
             resp = Response(
-                data={"error": "sms not sent"},
-                status=status.HTTP_503_SERVICE_UNAVAILABLE,
-                content_type="application/json"
-            )
-            SMSView.save_2_db(data_to_send, request.auth.user_id, True)
-            print(f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text} -- {data_to_send['number']}")
-            return resp
-        else:
-            resp = Response(
-                data={"status": "success"},
-                status=status.HTTP_201_CREATED,
-                content_type="application/json"
-            )
-            SMSView.save_2_db(data_to_send, request.auth.user_id, True)
-            print(f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text} -- {data_to_send['number']}")
-            return resp
-
-    @classmethod
-    def save_2_db(self, data_2_send, user_id, update_sms=False):
-        if update_sms:
-            sms_messages_serializer = SMSMessagesSerializer(
                 data={
-                    "sms_number_to": data_2_send.get("number"),
-                    "sms_content": data_2_send.get("msg_text"),
-                    "sending_user": user_id,
-                    "delivery_status": True,
-                }
-            )
-        else:
-            sms_messages_serializer = SMSMessagesSerializer(
-                data={
-                    "sms_number_to": data_2_send.get("sms_number_to"),
-                    "sms_content": data_2_send.get("sms_content"),
-                    "sending_user": user_id,
-                }
-            )
-        if sms_messages_serializer.is_valid():
-            sms_messages_serializer.save()
-        else:
-            print(str(sms_messages_serializer.errors))
-            resp = Response(
-                data={"error": f"{sms_messages_serializer.errors}"},
+                    "error": "sms_number_to and sms_content must not be null."
+                },
                 status=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 content_type="application/json"
             )
             print(f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text}")
             return resp
+        else:
+            data_to_send = {
+                "number": request.data.get("sms_number_to"),
+                "msg_text": request.data.get("sms_content")
+            }
+
+            status_flag, status_response = place_in_queue(data_to_send)
+            telegram_sender(data_to_send)
+
+            if not status_flag:
+                resp = Response(
+                    data={"error": "sms not sent"},
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    content_type="application/json"
+                )
+                SMSView.save_2_db(data_to_send, request.auth.user_id, False)
+                print(f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text} -- {data_to_send['number']}")
+                return resp
+            else:
+                resp = Response(
+                    data={"status": "success"},
+                    status=status.HTTP_201_CREATED,
+                    content_type="application/json"
+                )
+                SMSView.save_2_db(data_to_send, request.auth.user_id, True)
+                print(f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text} -- {data_to_send['number']}")
+                return resp
+
+    @classmethod
+    def save_2_db(self, data_2_send, user_id, update_sms=False):
+        sms_messages_serializer = SMSMessagesSerializer(
+            data={
+                "sms_number_to": data_2_send.get("number"),
+                "sms_content": data_2_send.get("msg_text"),
+                "sending_user": user_id,
+                "delivery_status": update_sms
+            }
+        )
+        if sms_messages_serializer.is_valid():
+            sms_messages_serializer.save()
+        else:
+            print(str(sms_messages_serializer.errors))
+
+
+class SMSCountView(APIView):
+    serializer_class = SMSMessagesSerializer
+
+    def get(self, request):
+        total, delivered, failed = self.count_queryset(request)
+        return Response(
+            data={"total": total, "delivered": delivered, "failed": failed},
+            status=status.HTTP_200_OK,
+            content_type="application/json"
+        )
+
+    def count_queryset(self, request):
+        val = datetime.datetime.now()
+        queryset = SMSMessages.objects.filter(sending_user=request.user, sent_date__year=val.year, sent_date__month=val.month)
+        if queryset.exists():
+            delivered_queryset = queryset.filter(delivery_status=True)
+            failed_queryset = queryset.filter(delivery_status=False)
+            total = queryset.count()
+            delivered = delivered_queryset.count()
+            failed = failed_queryset.count()
+            return total, delivered, failed
+        else:
+            return 0, 0, 0

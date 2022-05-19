@@ -42,6 +42,8 @@ def telegram_sender(sms_data):
         res.raise_for_status()
     except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError, requests.exceptions.ProxyError) as e:
         print(f"from telegram_sender -- {e}")
+    else:
+        print(f"telegram_sender -- {res} -- {res.reason}")
 
 
 def sender(sms_data):
@@ -53,6 +55,7 @@ def sender(sms_data):
 
     response = requests.Response()
     try:
+        time.sleep(2)
         response = requests.post(
             sending_url,
             data=sms_data,
@@ -62,6 +65,7 @@ def sender(sms_data):
         response.raise_for_status()
     except Exception as e:
         print(str(e))
+        print(f"RESPONSE {response.status_code} -- {response.headers} -- {response.reason}")
         return False, response
     else:
         return True, response
