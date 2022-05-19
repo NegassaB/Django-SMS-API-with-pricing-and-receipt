@@ -33,7 +33,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 # DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "api-et.sms.et", "dashboard.sms.et",]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "api-et.sms.et", "dashboard.sms.et", "95.217.211.38"]
 
 
 # Application definition
@@ -192,14 +192,24 @@ X_FRAME_OPTIONS = 'DENY'
 # enables persistent database connections as to have a nice speed-up when connecting to the database accounts for a significant part of the request processing time.
 CONN_MAX_AGE = None
 
+#CORS_ALLOWED_ORIGINS = ["*"]
+#CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:*",
-    "http://127.0.0.1:*",
-    "http://dashboard.sms.et:*",
-    "https://dashboard.sms.et:*",
-    "http://api-et.sms.et:*",
-    "https://api-et.sms.et:*",
+    "http://dashboard.sms.et:80",
+    "http://95.217.211.38:80",
 ]
+
+CORS_ALLOW_HEADERS = [
+        "accept",
+        "accept-encoding",
+        "authorization",
+        "content-type",
+        "origin",
+        "user-agent",
+        "x-csrftoken",
+        "x-requested-with",
+        "access-control-allow-origin",
+        ]
 
 try:
     from .local_settings import *
