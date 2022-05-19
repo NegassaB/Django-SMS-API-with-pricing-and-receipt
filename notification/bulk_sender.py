@@ -84,11 +84,10 @@ class BulkSender(generics.CreateAPIView):
             resp = self.generate_response(status_response)
             BulkSender.save_2_db(data_to_send, request.auth.user_id, False)
             print(f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text} -- {data_to_send['number']}")
-            return resp
         else:
             logger.info("COMPLETED SENDING SMS")
 
-    def generate_response(status_response):
+    def generate_response(self, status_response):
         if status_response != 200:
             return Response(
                 data={"error": "sms not sent"},
