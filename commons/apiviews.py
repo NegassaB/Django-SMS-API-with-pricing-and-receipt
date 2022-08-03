@@ -167,6 +167,8 @@ class LoginView(APIView):
     permission_classes = ()
 
     def post(self, request):
+        # if request.data.get("username") == "Bet24user" and request.data.get("password") == "":
+        #     pass
         username = request.data.get("username")
         password = request.data.get("password")
         user = authenticate(username=username, password=password)
