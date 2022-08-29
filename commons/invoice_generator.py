@@ -2,10 +2,13 @@ from commons.models import SMSUser, SMSMessages
 import datetime
 
 
-def generator():
+def generator(month_num=None):
     current_datetime = datetime.datetime.now()
     year = current_datetime.year
-    month = current_datetime.month - 1
+    if month_num:
+        month = current_datetime.month - month_num
+    else:
+        month = current_datetime.month
     all_users = SMSUser.objects.all()
     for user in all_users:
         sent_sms = SMSMessages.objects.filter(sending_user=user, sent_date__year=year, sent_date__month=month)
