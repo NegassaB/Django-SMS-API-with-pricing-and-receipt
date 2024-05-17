@@ -62,7 +62,7 @@ class SMSView(APIView, PageNumberPagination):
                 status=status.HTTP_401_UNAUTHORIZED,
                 content_type="application/json",
             )
-        serialized_phone = PhoneNumberSerializer(data=request.data.get("sms_number_to"))
+        serialized_phone = PhoneNumberSerializer(data=request.data)
         if not serialized_phone.is_valid(raise_exception=True):
             resp = Response(
                 data={"error": f"{serialized_phone.args}"},
@@ -85,14 +85,11 @@ class SMSView(APIView, PageNumberPagination):
             return resp
         else:
             sms_number_to = serialized_phone.validated_data.get("sms_number_to")
-            data_to_send = {
-                "number": sms_number_to,
-                "msg_text": request.data.get("sms_content"),
-            }
-
             if sms_number_to.startswith("+2517"):
+                data_to_send = {"number": sms_number_to, "msg_text": request.data.get("sms_content")}
                 status_flag, status_response = safari_sender(data_to_send)
             else:
+                data_to_send = {"number": sms_number_to, "msg_text": request.data.get("sms_content")}
                 status_flag, status_response = place_in_queue(data_to_send)
 
             telegram_sender(data_to_send)

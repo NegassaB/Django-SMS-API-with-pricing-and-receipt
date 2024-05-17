@@ -91,7 +91,8 @@ def safari_sender(data_to_send):
     response = requests.Response()
     try:
         response = requests.post(
-            verify="bsms-business-safaricom-et-chain.pem",
+            #verify="/var/www/api-et.sms.et/notification/bsms-business-safaricom-et-chain.pem",
+            #verify=False,
             url=f"{BULK_BASE}/send-sms/",
             headers={
                 "Content-Type": "application/json",
