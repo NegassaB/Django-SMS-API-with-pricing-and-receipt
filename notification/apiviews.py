@@ -70,7 +70,7 @@ class SMSView(APIView, PageNumberPagination):
                 content_type="application/json",
             )
             print(
-                f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text}"
+                f"{datetime.datetime.now()} -- {resp.status_code} -- {serialized_phone.args}"
             )
             return resp
         if not request.data.get("sms_content"):
