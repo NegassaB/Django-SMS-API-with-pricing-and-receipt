@@ -15,5 +15,5 @@ urlpatterns = [
     path("viewsms/", SMSView.as_view(), name="view_sms"),
     path("smscount/", SMSCountView.as_view(), name="sms_count"),
     path("sendbulk/", BulkSender.as_view(), name="send_bulk"),
-    path("safari-reciept/", SafariReceipt.as_view(), name="safari_recipet"),
+    path("safari-receipt/", SafariReceipt.as_view(), name="safari_receipt"),
 ]
