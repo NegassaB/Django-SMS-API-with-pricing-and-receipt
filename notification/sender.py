@@ -10,7 +10,7 @@ from queue import Queue
 import uuid
 
 
-base_url_sdp = "http://10.10.0.14:5000/"
+base_url_sdp = "http://10.10.0.26:5000/"
 
 sms_queue = Queue()
 
