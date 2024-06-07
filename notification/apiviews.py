@@ -162,5 +162,7 @@ class SMSCountView(APIView):
 
 
 class SafariReceipt(APIView):
+    authentication_classes = ()
+    permission_classes = ()
     def post(self, request):
         return Response(status=status.HTTP_200_OK)
