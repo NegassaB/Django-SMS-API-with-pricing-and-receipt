@@ -25,7 +25,6 @@ class SMSUserAdmin(UserAdmin):
     def get_queryset(self, request):
         if not request.user.is_superuser:
             return Exception("no permission to access this object")
-        super().get
         return super(SMSUserAdmin, self).get_queryset(request)
 
 
@@ -43,7 +42,7 @@ class SMSMessagesAdmin(admin.ModelAdmin):
         qs = super(SMSMessagesAdmin, self).get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(owner=request.user)
+        return qs.filter(sending_user=request.user)
 
 
 """ This registers, aka displays, the models on the admin page. """
