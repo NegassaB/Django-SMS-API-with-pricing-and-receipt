@@ -87,22 +87,32 @@ class SMSView(APIView, PageNumberPagination):
             print(f"{datetime.datetime.now()} -- {request.data}")
             sms_number_to = serialized_phone.validated_data.get("sms_number_to")
             if sms_number_to.startswith("+2517"):
-                data_to_send = {"number": sms_number_to, "msg_text": request.data.get("sms_content")}
+                data_to_send = {
+                    "number": sms_number_to,
+                    "msg_text": request.data.get("sms_content"),
+                }
                 status_flag, status_response = safari_sender(data_to_send)
             else:
-                data_to_send = {"number": sms_number_to, "msg_text": request.data.get("sms_content")}
+                data_to_send = {
+                    "number": sms_number_to,
+                    "msg_text": request.data.get("sms_content"),
+                }
                 try:
                     SMSView.save_2_db(data_to_send, request.auth.user_id, False)
                 except Exception as e:
                     print(f"exception on saving {e}, {data_to_send}")
-                    resp = Response(data={"error": f"{e}"}, status=status.HTTP_400_BAD_REQUEST, content_type="application/json")
+                    resp = Response(
+                        data={"error": f"{e}"},
+                        status=status.HTTP_400_BAD_REQUEST,
+                        content_type="application/json",
+                    )
                     return resp
                 status_flag, status_response = place_in_queue(data_to_send)
 
             telegram_sender(data_to_send)
             if not status_flag:
                 resp = Response(
-                    data={"error": "sms not sent"},
+                    data={"error": f"sms not sent {status_response.reason}"},
                     status=status.HTTP_503_SERVICE_UNAVAILABLE,
                     content_type="application/json",
                 )
@@ -170,5 +180,6 @@ class SMSCountView(APIView):
 class SafariReceipt(APIView):
     authentication_classes = ()
     permission_classes = ()
+
     def post(self, request):
         return Response(status=status.HTTP_200_OK)
