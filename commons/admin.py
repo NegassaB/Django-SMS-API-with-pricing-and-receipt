@@ -9,16 +9,42 @@ from commons.models import SMSUser, SMSPrice, Type, SMSMessages, Invoice
 
 
 class SMSUserAdmin(UserAdmin):
-    """ This class sub-classes the UserAdmin class and is used as a customized admin panel. """
+    """This class sub-classes the UserAdmin class and is used as a customized admin panel."""
+
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = SMSUser
-    list_display = ('username', 'email', 'company_name', 'company_tin', 'company_status')
+    list_display = (
+        "username",
+        "email",
+        "company_name",
+        "company_tin",
+        "company_status",
+    )
+
+    def get_queryset(self, request):
+        if not request.user.is_superuser:
+            return Exception("no permission to access this object")
+        super().get
+        return super(SMSUserAdmin, self).get_queryset(request)
 
 
 class SMSMessagesAdmin(admin.ModelAdmin):
     model = SMSMessages
-    list_display = ('sms_number_to', 'sms_content', 'sending_user', 'sent_date', 'delivery_status')
+    list_display = (
+        "sms_number_to",
+        "sms_content",
+        "sending_user",
+        "sent_date",
+        "delivery_status",
+    )
+
+    def get_queryset(self, request):
+        qs = super(SMSMessagesAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(owner=request.user)
+
 
 """ This registers, aka displays, the models on the admin page. """
 admin.site.register(SMSUser, SMSUserAdmin)
