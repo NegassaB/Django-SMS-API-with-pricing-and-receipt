@@ -84,12 +84,19 @@ class SMSView(APIView, PageNumberPagination):
             )
             return resp
         else:
+            print(f"{datetime.datetime.now()} -- {request.data}")
             sms_number_to = serialized_phone.validated_data.get("sms_number_to")
             if sms_number_to.startswith("+2517"):
                 data_to_send = {"number": sms_number_to, "msg_text": request.data.get("sms_content")}
                 status_flag, status_response = safari_sender(data_to_send)
             else:
                 data_to_send = {"number": sms_number_to, "msg_text": request.data.get("sms_content")}
+                try:
+                    SMSView.save_2_db(data_to_send, request.auth.user_id, False)
+                except Exception as e:
+                    print(f"exception on saving {e}, {data_to_send}")
+                    resp = Response(data={"error": f"{e}"}, status=status.HTTP_400_BAD_REQUEST, content_type="application/json")
+                    return resp
                 status_flag, status_response = place_in_queue(data_to_send)
 
             telegram_sender(data_to_send)
@@ -99,7 +106,6 @@ class SMSView(APIView, PageNumberPagination):
                     status=status.HTTP_503_SERVICE_UNAVAILABLE,
                     content_type="application/json",
                 )
-                SMSView.save_2_db(data_to_send, request.auth.user_id, False)
                 print(
                     f"{datetime.datetime.now()} -- {resp.status_code} -- {resp.status_text} -- {data_to_send['number']}"
                 )

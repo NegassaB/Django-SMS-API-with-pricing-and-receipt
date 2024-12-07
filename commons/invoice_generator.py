@@ -10,11 +10,9 @@ def generator(year=None, month=None):
         month = current_datetime.month
     all_users = SMSUser.objects.all()
     for user in all_users:
-        sent_sms = SMSMessages.objects.filter(sending_user=user, sent_date__year=year, sent_date__month=month).values_list('pk', flat=True)
+        sent_sms = SMSMessages.objects.filter(sending_user=user, sent_date__year=year, sent_date__month=month, delivery_status=True).values_list('pk', flat=True)
         if sent_sms.count() == 0:
             continue
-        if user.username == "ActivBetUser1" or user.username == "ChampionBet":
-            sent_sms = sent_sms.filter(delivery_status=True)
         print(f"sending_user -- {user.username} sent_sms {sent_sms.count()}")
 
 
