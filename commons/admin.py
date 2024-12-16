@@ -1,6 +1,5 @@
 from django.contrib import admin
-from django.contrib.auth import get_user_model
-from django.contrib.auth.admin import UserAdmin, admin
+from django.contrib.auth.admin import UserAdmin
 
 from commons.forms import CustomUserChangeForm, CustomUserCreationForm
 from commons.models import SMSUser, SMSPrice, Type, SMSMessages, Invoice
