@@ -16,7 +16,7 @@ import time
 from commons.models import SMSMessages
 from commons.serializers import SMSMessagesSerializer
 from notification.serializers import PhoneNumberSerializer
-from notification.sender import place_in_queue, telegram_sender, safari_sender
+from notification.sender import place_in_queue, safari_sender
 
 
 class SMSView(APIView, PageNumberPagination):
@@ -111,7 +111,6 @@ class SMSView(APIView, PageNumberPagination):
                 time.sleep(1)
                 status_flag, status_response = place_in_queue(data_to_send)
 
-            telegram_sender(data_to_send)
             if not status_flag:
                 resp = Response(
                     data={"error": f"sms not sent {status_response.reason}"},
