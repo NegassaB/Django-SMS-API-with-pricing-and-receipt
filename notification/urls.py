@@ -1,5 +1,4 @@
 from django.urls import path
-from rest_framework.authtoken import views
 from rest_framework.routers import DefaultRouter
 
 from notification.apiviews import SMSView, SMSCountView, SafariReceipt

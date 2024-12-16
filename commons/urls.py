@@ -2,7 +2,7 @@
 The acutal urls.py file that will do most of the work.
 """
 
-from django.urls import path, include
+from django.urls import path
 from rest_framework.authtoken import views
 from rest_framework.routers import DefaultRouter
 

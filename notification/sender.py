@@ -32,7 +32,6 @@ def telegram_sender(sms_data):
     telegram_sms_data = {}
     telegram_sms_data["number"] = sms_data.get("number")
     telegram_sms_data["msg_txt"] = sms_data.get("msg_text")
-    return
     try:
         res = requests.post(
             "http://gargarsa.sms.et/telegram_sender/",
@@ -74,8 +73,9 @@ def sender(sms_data):
 
 
 def safari_sender(data_to_send):
-    sms_number_to, sms_content = data_to_send.get("number"), data_to_send.get(
-        "msg_text"
+    sms_number_to, sms_content = (
+        data_to_send.get("number"),
+        data_to_send.get("msg_text"),
     )
     PROD_PERSONAL_ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYTgyODc1NGRmYTg2N2M3ZjJmYjg3MTg5ZmU4MzAzNzY0YjZjZDMyYzExYWM4Nzk5OGFlY2Y2OTU4ODY0NDZhNjBmMWQ4MDQ5YjlkMDQyMTUiLCJpYXQiOjE3MDU2NzQ0ODksIm5iZiI6MTcwNTY3NDQ4OSwiZXhwIjo0ODYxMzQ4MDg5LCJzdWIiOiI0NSIsInNjb3BlcyI6W119.mk4fmhM6tCyYdNYVYv7BR-3yGdJXXIlc6rpuwvNFp69PvITvLdau8RtJus791wHg1BG6AkkuAkQyNTcL9SrFZMWWPW0pQb3qcuBeIbTcfAp8ICtYseVxjGJISOkzd4ZtIzxRZU33Umej64nr_mtIWtSv8-3BM6ZiHeG1m6pPK1rfmTtVcXn-pcESu8yqCJFoRLf7GIDMZCZeks6GyDbPcdy4IBrwB6BCaoILqMcyefMypwdisMBIiXQl7lpNUd2Oq8GKndQzRoNY_bwzgJ-JnV-vs9q1u9TY2GguGduZrlm1OAxCSeX2QB5GDkpf9XpXOgULWyo-0JmH63ELQpY3A6wYR-BmMqjPhLbSfAdLmkMJCumn87NT_BZA0zlag03XcZqqV-JdwKiOHAYsWKB5VtWFMEG6zQry8Pk1wexsSoqOi1tUqdSgJV40duhLzMts9b6VGqpvKuwaSCM4tV-okAMZVjLM19K--ZHHNK34QlaU8BRJx96Fi46-JCouC3d8rf-M5qQ1_D9U4b1HSLznJe8xEmjlbyE6X05vf_J99ubCiru-a298hZndSa6wZv6oRTJpwtmmI3MtIz_l4AZSDfz8_ggqZC4SFY3aCaBIwEi24VvRPqvj_fpuErKig0ERXxehTzjcOv6Q9PCl1QoGMgGjbzilEJRTMR0Y1YaVID0"
     PROD_HEADERS = f"Bearer {PROD_PERSONAL_ACCESS_TOKEN}"
@@ -91,8 +91,8 @@ def safari_sender(data_to_send):
     response = requests.Response()
     try:
         response = requests.post(
-            #verify="/var/www/api-et.sms.et/notification/bsms-business-safaricom-et-chain.pem",
-            #verify=False,
+            # verify="/var/www/api-et.sms.et/notification/bsms-business-safaricom-et-chain.pem",
+            # verify=False,
             url=f"{BULK_BASE}/send-sms/",
             headers={
                 "Content-Type": "application/json",
