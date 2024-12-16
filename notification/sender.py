@@ -32,6 +32,7 @@ def telegram_sender(sms_data):
     telegram_sms_data = {}
     telegram_sms_data["number"] = sms_data.get("number")
     telegram_sms_data["msg_txt"] = sms_data.get("msg_text")
+    return
     try:
         res = requests.post(
             "http://gargarsa.sms.et/telegram_sender/",
