@@ -107,6 +107,7 @@ class SMSView(APIView, PageNumberPagination):
                         content_type="application/json",
                     )
                     return resp
+                time.sleep(1)
                 status_flag, status_response = place_in_queue(data_to_send)
 
             telegram_sender(data_to_send)
