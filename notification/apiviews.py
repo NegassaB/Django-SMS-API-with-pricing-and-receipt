@@ -74,9 +74,14 @@ class SMSView(APIView, PageNumberPagination):
                 f"{datetime.datetime.now()} -- {resp.status_code} -- {serialized_phone.args}"
             )
             return resp
-        if not request.data.get("sms_content") or len(request.data.get("sms_content")) > 160:
+        if (
+            not request.data.get("sms_content")
+            or len(request.data.get("sms_content")) > 160
+        ):
             resp = Response(
-                data={"error": "sms_content must not be null or more than 160 characters."},
+                data={
+                    "error": "sms_content must not be null or more than 160 characters."
+                },
                 status=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 content_type="application/json",
             )
@@ -147,6 +152,7 @@ class SMSView(APIView, PageNumberPagination):
             sms_messages_serializer.save()
         else:
             print(str(sms_messages_serializer.errors))
+            raise Exception(str(sms_messages_serializer.errors))
 
 
 class SMSCountView(APIView):
