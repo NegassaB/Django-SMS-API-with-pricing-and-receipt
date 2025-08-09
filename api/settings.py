@@ -37,9 +37,8 @@ DEBUG = env("DEBUG")
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "api-et.sms.et",
-    "dashboard.sms.et",
-    "95.217.211.38",
+    "domain-name",
+    "IPs",
 ]
 
 
@@ -193,12 +192,9 @@ X_FRAME_OPTIONS = "DENY"
 # enables persistent database connections as to have a nice speed-up when connecting to the database accounts for a significant part of the request processing time.
 CONN_MAX_AGE = None
 
-# CORS_ALLOWED_ORIGINS = ["*"]
+# CORS_ALLOWED_ORIGINS = ["*",]
 # CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOWED_ORIGINS = [
-    "http://dashboard.sms.et:80",
-    "http://95.217.211.38:80",
-]
+CORS_ALLOWED_ORIGINS = ["*",]
 
 CORS_ALLOW_HEADERS = [
     "accept",
